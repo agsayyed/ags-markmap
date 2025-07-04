@@ -1,0 +1,37 @@
+@import 'variables';
+
+// Styles for the ags-markmap module
+.ags-markmap-container {
+  margin-bottom: $ags-markmap-margin-bottom;
+  position: relative;
+  width: 100%;
+
+  // The SVG container
+  #ags-markmap-svg {
+    width: 100%;
+    height: $ags-markmap-height;
+    border: 1px solid $ags-markmap-border-color;
+    border-radius: $ags-markmap-border-radius;
+
+    // Mobile-specific styles
+    @media (max-width: 768px) {
+      height: $ags-markmap-mobile-height;
+    }
+  }
+
+  // Customize markmap nodes
+  .markmap-node {
+    cursor: pointer;
+
+    &:hover > text {
+      fill: var(--bs-primary);
+    }
+  }
+
+  // Customize markmap links
+  .markmap-link {
+    &:hover {
+      stroke: var(--bs-primary);
+    }
+  }
+}

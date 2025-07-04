@@ -1,0 +1,6 @@
+[params.hb.ags_markmap]
+enable = true
+placement = "top"
+height = "400px"
+autoFit = true
+duration = 400

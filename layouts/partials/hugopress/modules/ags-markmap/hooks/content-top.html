@@ -1,0 +1,7 @@
+{{- /* This partial is called by hugopress to insert the markmap at the top of the content It will
+only render if the page has ags_markmap: true in its frontmatter */ -}} {{- if
+.Page.Params.ags_markmap -}}
+<div id="ags-markmap-container" class="ags-markmap-container">
+  {{- /* The SVG will be generated via JavaScript */ -}}
+</div>
+{{- end -}}
