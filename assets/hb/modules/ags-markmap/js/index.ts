@@ -1,7 +1,8 @@
 function initMarkmap(retry = 0) {
   const el = document.getElementById('ags-markmap-container')
   if (!el) {
-    if (retry < 10) {
+    if (retry < 30) {
+      // Try for 3 seconds instead of 1
       console.warn(`[ags-markmap] Container not found. Retrying (${retry + 1})...`)
       setTimeout(() => initMarkmap(retry + 1), 100)
     } else {
@@ -30,7 +31,7 @@ function initMarkmap(retry = 0) {
   console.log('[ags-markmap] Markmap rendered.')
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  console.log('[ags-markmap] DOM fully loaded. Waiting for container...')
+window.addEventListener('load', () => {
+  console.log('[ags-markmap] Window fully loaded. Waiting for container...')
   setTimeout(() => initMarkmap(), 100)
 })
