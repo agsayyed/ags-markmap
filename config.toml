@@ -4,3 +4,10 @@ placement = "top"
 height = "400px"
 autoFit = true
 duration = 400
+
+# HugoPress module configuration
+[params.hugopress.modules.ags-markmap.hooks.head-end]
+weight = 10
+
+[params.hugopress.modules.ags-markmap.hooks.body-begin]
+weight = 10
