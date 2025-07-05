@@ -2,23 +2,25 @@
 {{- if .Page.Params.ags_markmap -}}
   <script>console.log("[ags-markmap] ags_markmap is enabled in front matter");</script>
 
-  <div id="ags-markmap-container" style="width: 100%; height: 400px;"></div>
-  
-  {{- with resources.Get "hb/modules/ags-markmap/vendor/markmap/markmap-view.min.js" -}}
-    {{- $vendor := . | resources.Fingerprint -}}
-    <script src="{{ $vendor.RelPermalink }}" integrity="{{ $vendor.Data.Integrity }}" defer></script>
-  {{- else -}}
-    <script>console.warn("[ags-markmap] markmap-view.min.js not found");</script>
-  {{- end }}
+  <div id="ags-markmap-container" class="ags-markmap-container"></div>
 
-  {{- with resources.Get "hb/modules/ags-markmap/js/index.ts" -}}
-    {{- $js := . | js.Build | resources.Minify | resources.Fingerprint -}}
+  {{- with resources.Get "hb/modules/ags-markmap/vendor/d3.min.js" -}}
+    {{- $d3 := . | resources.Minify | resources.Fingerprint -}}
+    <script src="{{ $d3.RelPermalink }}" integrity="{{ $d3.Data.Integrity }}" defer></script>
+  {{- end -}}
+
+  {{- with resources.Get "hb/modules/ags-markmap/vendor/markmap-view.min.js" -}}
+    {{- $mm := . | resources.Minify | resources.Fingerprint -}}
+    <script src="{{ $mm.RelPermalink }}" integrity="{{ $mm.Data.Integrity }}" defer></script>
+  {{- end -}}
+
+  {{- with resources.Get "hb/modules/ags-markmap/js/index.js" -}}
+    {{- $js := . | resources.Minify | resources.Fingerprint -}}
     <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
-  {{- else -}}
-    <script>console.warn("[ags-markmap] index.ts not found or failed to compile");</script>
-  {{- end }}
-
-  <script>document.body.dataset.agsMarkmap = 'true'</script>
+    <script>
+      document.body.dataset.agsMarkmap = 'true'
+    </script>
+  {{- end -}}
 {{- else -}}
   <script>console.log("[ags-markmap] ags_markmap is NOT enabled on this page");</script>
 {{- end -}}
