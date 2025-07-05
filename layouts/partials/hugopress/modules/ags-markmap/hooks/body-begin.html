@@ -1,18 +1,28 @@
 {{- /* AGS Markmap Hook: Load scripts and initialize markmap when enabled in front matter */ -}} {{-
-if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
-*/ -}}
+if .Page.Params.ags_markmap -}} 
+
+{{- /* Check if we're in development environment */ -}}
+{{- $isDev := eq hugo.Environment "development" -}}
+
+{{- /* Use UNPKG with a known working version */ -}}
 <script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
 <script src="https://unpkg.com/markmap-view@0.15.8/dist/browser/index.js"></script>
 
 {{- /* Pass options to JavaScript and initialize markmap */ -}} {{- $opts :=
 .Page.Params.ags_markmap_opts | default dict | jsonify -}}
 <script>
-  console.log('[ags-markmap] Starting initialization...');
+  // Environment-aware logging
+  const isDev = {{ $isDev }};
+  const log = isDev ? console.log.bind(console) : () => {};
+  const warn = isDev ? console.warn.bind(console) : () => {};
+  const error = console.error.bind(console); // Always show errors
+  
+  log('[ags-markmap] Starting initialization...');
   window.agsMarkmapOptions = {{ $opts | safeJS }};
-  console.log("[ags-markmap] Options loaded:", window.agsMarkmapOptions);
+  log("[ags-markmap] Options loaded:", window.agsMarkmapOptions);
 
   document.addEventListener('DOMContentLoaded', function() {
-    console.log('[ags-markmap] DOM ready');
+    log('[ags-markmap] DOM ready');
 
     // Function to check if markmap is loaded
     function checkMarkmapLoaded() {
@@ -22,7 +32,7 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
         
         const checkInterval = setInterval(() => {
           attempts++;
-          console.log(`[ags-markmap] Loading attempt ${attempts}/${maxAttempts}`);
+          log(`[ags-markmap] Loading attempt ${attempts}/${maxAttempts}`);
           
           // Check for different possible global objects
           const hasD3 = typeof window.d3 !== 'undefined';
@@ -30,10 +40,10 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
           const hasGlobalMarkmap = typeof window.Markmap !== 'undefined';
           const hasMarkmapView = typeof window.markmapView !== 'undefined';
           
-          console.log('[ags-markmap] Load status:', { hasD3, hasMarkmap, hasGlobalMarkmap, hasMarkmapView });
-          console.log('[ags-markmap] window.markmap:', typeof window.markmap);
-          console.log('[ags-markmap] window.markmapView:', typeof window.markmapView);
-          console.log('[ags-markmap] Available globals:', Object.keys(window).filter(k => k.toLowerCase().includes('mark')));
+          log('[ags-markmap] Load status:', { hasD3, hasMarkmap, hasGlobalMarkmap, hasMarkmapView });
+          log('[ags-markmap] window.markmap:', typeof window.markmap);
+          log('[ags-markmap] window.markmapView:', typeof window.markmapView);
+          log('[ags-markmap] Available globals:', Object.keys(window).filter(k => k.toLowerCase().includes('mark')));
           
           if (hasD3 && (hasMarkmap || hasGlobalMarkmap || hasMarkmapView)) {
             clearInterval(checkInterval);
@@ -49,11 +59,11 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
     // Start checking for markmap libraries
     checkMarkmapLoaded()
       .then(() => {
-        console.log('[ags-markmap] Libraries loaded successfully!');
+        log('[ags-markmap] Libraries loaded successfully!');
         initializeMarkmap();
       })
       .catch((error) => {
-        console.error('[ags-markmap] Failed to load libraries:', error);
+        error('[ags-markmap] Failed to load libraries:', error);
         showError('Libraries failed to load: ' + error.message);
       });
 
@@ -68,14 +78,14 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
     }
 
     function initializeMarkmap() {
-      console.log('[ags-markmap] Starting markmap initialization...');
-      console.log('[ags-markmap] window.markmap:', typeof window.markmap);
-      console.log('[ags-markmap] window.markmap?.Markmap:', typeof window.markmap?.Markmap);
-      console.log('[ags-markmap] Available globals:', Object.keys(window).filter(k => k.toLowerCase().includes('mark')));
+      log('[ags-markmap] Starting markmap initialization...');
+      log('[ags-markmap] window.markmap:', typeof window.markmap);
+      log('[ags-markmap] window.markmap?.Markmap:', typeof window.markmap?.Markmap);
+      log('[ags-markmap] Available globals:', Object.keys(window).filter(k => k.toLowerCase().includes('mark')));
 
       const container = document.getElementById('ags-markmap-container');
       if (!container) {
-        console.warn('[ags-markmap] No container found');
+        warn('[ags-markmap] No container found');
         return;
       }
 
@@ -86,7 +96,7 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
       const markmapAPI = window.markmap?.Markmap || window.Markmap || window.markmapView?.Markmap;
       
       if (markmapAPI) {
-        console.log('[ags-markmap] Markmap found!', markmapAPI);
+        log('[ags-markmap] Markmap found!', markmapAPI);
 
         try {
           // Extract headings dynamically from the current page
@@ -115,7 +125,7 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
               })
               .filter(h => h.text.length > 0); // Remove empty headings after cleaning
 
-            console.log('[ags-markmap] Found headings:', headings);
+            log('[ags-markmap] Found headings:', headings);
             return headings;
           }
 
@@ -171,7 +181,7 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
           const headings = extractHeadings();
           const root = buildTree(headings);
 
-          console.log('[ags-markmap] Built dynamic tree:', root);
+          log('[ags-markmap] Built dynamic tree:', root);
 
           // Clear container and let CSS handle styling
           container.innerHTML = '';
@@ -180,8 +190,8 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
           const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
           container.appendChild(svg);
 
-          console.log('[ags-markmap] SVG created, initializing markmap...');
-          console.log('[ags-markmap] Available markmap methods:', Object.keys(window.markmap));
+          log('[ags-markmap] SVG created, initializing markmap...');
+          log('[ags-markmap] Available markmap methods:', Object.keys(window.markmap));
 
           // Create markmap with basic options
           const options = {
@@ -191,7 +201,7 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
             ...window.agsMarkmapOptions
           };
 
-          console.log('[ags-markmap] Creating markmap with options:', options);
+          log('[ags-markmap] Creating markmap with options:', options);
 
           // Use the detected markmap API
           let mm;
@@ -199,19 +209,19 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
           if (typeof markmapAPI.create === 'function') {
             // Try the create static method
             mm = markmapAPI.create(svg, options, root);
-            console.log('[ags-markmap] Created with static create method');
+            log('[ags-markmap] Created with static create method');
           } else {
             // Try constructor approach
             mm = new markmapAPI(svg, options);
             if (mm && typeof mm.setData === 'function') {
               mm.setData(root);
-              console.log('[ags-markmap] Created with constructor + setData');
+              log('[ags-markmap] Created with constructor + setData');
             } else {
-              console.log('[ags-markmap] Created with constructor only');
+              log('[ags-markmap] Created with constructor only');
             }
           }
 
-          console.log('[ags-markmap] Markmap created successfully!', mm);
+          log('[ags-markmap] Markmap created successfully!', mm);
 
           // Add a subtle success indicator that doesn't interfere with layout
           const successDiv = document.createElement('div');
@@ -223,9 +233,9 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
           // Verify rendering after a short delay
           setTimeout(() => {
             if (svg.children.length > 0) {
-              console.log('[ags-markmap] SVG rendered with', svg.children.length, 'child elements');
+              log('[ags-markmap] SVG rendered with', svg.children.length, 'child elements');
             } else {
-              console.warn('[ags-markmap] SVG appears empty after rendering');
+              warn('[ags-markmap] SVG appears empty after rendering');
               // Add fallback visualization
               svg.innerHTML = `
                 <g transform="translate(400,250)">
@@ -239,13 +249,13 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
             // Fit the view
             if (mm && mm.fit) {
               mm.fit();
-              console.log('[ags-markmap] View fitted');
+              log('[ags-markmap] View fitted');
             }
           }, 200);
 
         } catch (error) {
-          console.error('[ags-markmap] Error creating markmap:', error);
-          console.error('[ags-markmap] Error stack:', error.stack);
+          error('[ags-markmap] Error creating markmap:', error);
+          error('[ags-markmap] Error stack:', error.stack);
           
           container.innerHTML = `<div style="color: red; padding: 20px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">
             <strong>❌ Error:</strong> ${error.message}<br>
@@ -261,7 +271,7 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
           </div>`;
         }
       } else {
-        console.warn('[ags-markmap] Markmap libraries not found');
+        warn('[ags-markmap] Markmap libraries not found');
         showError('Markmap libraries not loaded');
       }
     }
@@ -270,6 +280,8 @@ if .Page.Params.ags_markmap -}} {{- /* Use UNPKG with a known working version
 
 {{- else -}}
 <script>
+  {{- if eq hugo.Environment "development" -}}
   console.log('[ags-markmap] Module disabled on this page')
+  {{- end -}}
 </script>
 {{- end -}}
