@@ -35,42 +35,88 @@ if .Page.Params.ags_markmap -}} {{- /* Use a more compatible approach with prove
         console.log('[ags-markmap] Markmap found!', window.markmap);
 
         try {
-          // Use standard markmap tree structure with 'content' for text and 'children' for array
-          const root = {
-            content: 'AGS Markmap Test',
-            children: [
-              {
-                content: 'Getting Started',
-                children: [
-                  { content: 'Install Module', children: [] },
-                  { content: 'Enable Frontmatter', children: [] }
-                ]
-              },
-              {
-                content: 'How It Works',
-                children: [
-                  { content: 'Extracts Headings', children: [] },
-                  {
-                    content: 'Builds Tree',
-                    children: [
-                      { content: 'Flat', children: [] },
-                      { content: 'Nested', children: [] }
-                    ]
-                  },
-                  { content: 'Renders Mindmap', children: [] }
-                ]
-              },
-              {
-                content: 'Customize Options',
-                children: [
-                  { content: 'Zoom + Pan', children: [] },
-                  { content: 'Theme', children: [] }
-                ]
-              }
-            ]
-          };
+          // Extract headings dynamically from the current page
+          function extractHeadings() {
+            const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+              .filter(h => {
+                // Filter out navigation and system headings
+                const parent = h.closest('.hb-docs-sidebar, .hb-docs-toc, nav, .navbar, .breadcrumb');
+                return !parent && h.textContent.trim().length > 0;
+              })
+              .map(h => {
+                // Get clean text content, removing anchor symbols and other decorations
+                let text = h.textContent || h.innerText || '';
+                
+                // Remove common anchor link symbols and decorations
+                text = text.replace(/[§¶#↵⌘∞†‡★☆♦♠♣♥←→↑↓]/g, ''); // Various symbols
+                text = text.replace(/[\u00A0-\u00FF\u2000-\u206F\u2E00-\u2E7F]/g, ' '); // Unicode symbols and spaces
+                text = text.replace(/\s+/g, ' '); // Normalize whitespace
+                text = text.trim();
+                
+                return {
+                  level: parseInt(h.tagName.charAt(1)),
+                  text: text,
+                  element: h
+                };
+              })
+              .filter(h => h.text.length > 0); // Remove empty headings after cleaning
 
-          console.log('[ags-markmap] Using tree with content/children structure:', root);
+            console.log('[ags-markmap] Found headings:', headings);
+            return headings;
+          }
+
+          // Build tree structure from flat heading list
+          function buildTree(headings) {
+            if (headings.length === 0) {
+              return {
+                content: 'No headings found',
+                children: []
+              };
+            }
+
+            // Extract clean page title (remove site branding)
+            const fullTitle = document.title || 'Page Content';
+            const cleanTitle = fullTitle.split(' - ')[0] || fullTitle.split(' | ')[0] || fullTitle;
+            
+            // Filter out the first heading if it matches the page title (to avoid duplication)
+            const filteredHeadings = headings.filter((heading, index) => {
+              if (index === 0 && heading.text.toLowerCase().trim() === cleanTitle.toLowerCase().trim()) {
+                return false; // Skip first heading if it matches page title
+              }
+              return true;
+            });
+            
+            const root = {
+              content: cleanTitle,
+              children: []
+            };
+
+            const stack = [{ node: root, level: 0 }];
+
+            filteredHeadings.forEach(heading => {
+              const newNode = {
+                content: heading.text,
+                children: []
+              };
+
+              // Find the right parent level
+              while (stack.length > 1 && stack[stack.length - 1].level >= heading.level) {
+                stack.pop();
+              }
+
+              // Add to parent
+              stack[stack.length - 1].node.children.push(newNode);
+              stack.push({ node: newNode, level: heading.level });
+            });
+
+            return root;
+          }
+
+          // Extract headings and build tree
+          const headings = extractHeadings();
+          const root = buildTree(headings);
+
+          console.log('[ags-markmap] Built dynamic tree:', root);
 
           // Clear container and let CSS handle styling
           container.innerHTML = '';
