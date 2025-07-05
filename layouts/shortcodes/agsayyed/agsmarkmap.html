@@ -1,0 +1,14 @@
+{{- /* Shortcode for manually placing a markmap anywhere in the content Usage: {{<
+agsayyed/agsmarkmap >}} */ -}}
+
+<div id="ags-markmap-container" class="ags-markmap-container">
+  {{- /* The SVG will be generated via JavaScript */ -}}
+</div>
+
+{{- if not .Page.Params.ags_markmap -}} {{- with resources.Get "hb/modules/ags-markmap/js/index.js"
+-}} {{- $js := . | resources.Minify | resources.Fingerprint -}}
+<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+<script>
+  document.body.dataset.agsMarkmap = 'true'
+</script>
+{{- end -}} {{- end -}}
