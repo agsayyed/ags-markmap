@@ -1,14 +1,35 @@
-{{- /* Shortcode for manually placing a markmap anywhere in the content Usage: {{<
-agsayyed/agsmarkmap >}} */ -}}
+{{- /* Shortcode for Markmap using markmap-view and a pre-generated tree. Usage: {{< agsayyed/agsmarkmap src="/vendor/markmap-devops.json" >}} */ -}}
 
-<div id="ags-markmap-container" class="ags-markmap-container">
-  {{- /* The SVG will be generated via JavaScript */ -}}
-</div>
+{{ $src := .Get "src" | default "/vendor/markmap-tree.json" }}
+<div id="ags-markmap-container" class="ags-markmap-container"></div>
 
-{{- if not .Page.Params.ags_markmap -}} {{- with resources.Get "hb/modules/ags-markmap/js/index.js"
--}} {{- $js := . | resources.Minify | resources.Fingerprint -}}
-<script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"
+  onload="console.log('[ags-markmap] d3 loaded')"
+  onerror="console.error('[ags-markmap] Failed to load d3')"
+></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/markmap-view/dist/browser/index.min.js"
+  onload="console.log('[ags-markmap] markmap-view loaded, window.markmap:', window.markmap)"
+  onerror="console.error('[ags-markmap] Failed to load markmap-view')"
+></script>
 <script>
-  document.body.dataset.agsMarkmap = 'true'
+  console.log('[ags-markmap] Inline script running');
+  window.onload = function () {
+    console.log('[ags-markmap] window.onload fired');
+    const container = document.getElementById('ags-markmap-container');
+    if (container) {
+      fetch('{{ $src }}')
+        .then(res => res.json())
+        .then(root => {
+          window.markmap.Markmap.create(container, null, root);
+          console.log('[ags-markmap] Markmap rendered');
+        })
+        .catch(e => {
+          console.error('[ags-markmap] Failed to load or render Markmap tree:', e);
+        });
+    } else {
+      console.error('[ags-markmap] Container not found');
+    }
+  }
 </script>
-{{- end -}} {{- end -}}

@@ -1,0 +1,150 @@
+{{- /* AGS Markmap Hook: Load scripts and initialize markmap when enabled in front matter */ -}} {{-
+if .Page.Params.ags_markmap -}} {{- /* Use a more compatible approach with proven markmap versions
+*/ -}}
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="https://unpkg.com/markmap-lib@0.15.0/dist/browser/index.js"></script>
+<script src="https://unpkg.com/markmap-view@0.15.0/dist/browser/index.js"></script>
+
+{{- /* Pass options to JavaScript and initialize markmap */ -}} {{- $opts :=
+.Page.Params.ags_markmap_opts | default dict | jsonify -}}
+<script>
+  console.log('[ags-markmap] Starting initialization...');
+  window.agsMarkmapOptions = {{ $opts | safeJS }};
+  console.log("[ags-markmap] Options loaded:", window.agsMarkmapOptions);
+
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('[ags-markmap] DOM ready');
+
+    setTimeout(() => {
+      console.log('[ags-markmap] Checking for markmap libraries...');
+      console.log('[ags-markmap] window.markmap:', typeof window.markmap);
+      console.log('[ags-markmap] window.markmap?.Markmap:', typeof window.markmap?.Markmap);
+      console.log('[ags-markmap] Available globals:', Object.keys(window).filter(k => k.toLowerCase().includes('mark')));
+
+      const container = document.getElementById('ags-markmap-container');
+      if (!container) {
+        console.warn('[ags-markmap] No container found');
+        return;
+      }
+
+      // Show loading state first
+      container.innerHTML = '<div style="padding: 20px; border: 2px solid #ffc107; background: #fff3cd; color: #856404;">🔄 Loading markmap libraries...</div>';
+
+      // Check if markmap is available
+      if (typeof window.markmap !== 'undefined' && window.markmap.Markmap) {
+        console.log('[ags-markmap] Markmap found!', window.markmap);
+
+        try {
+          // Use standard markmap tree structure with 'content' for text and 'children' for array
+          const root = {
+            content: 'AGS Markmap Test',
+            children: [
+              {
+                content: 'Getting Started',
+                children: [
+                  { content: 'Install Module', children: [] },
+                  { content: 'Enable Frontmatter', children: [] }
+                ]
+              },
+              {
+                content: 'How It Works',
+                children: [
+                  { content: 'Extracts Headings', children: [] },
+                  {
+                    content: 'Builds Tree',
+                    children: [
+                      { content: 'Flat', children: [] },
+                      { content: 'Nested', children: [] }
+                    ]
+                  },
+                  { content: 'Renders Mindmap', children: [] }
+                ]
+              },
+              {
+                content: 'Customize Options',
+                children: [
+                  { content: 'Zoom + Pan', children: [] },
+                  { content: 'Theme', children: [] }
+                ]
+              }
+            ]
+          };
+
+          console.log('[ags-markmap] Using tree with content/children structure:', root);
+
+          // Clear container and let CSS handle styling
+          container.innerHTML = '';
+
+          // Create SVG element with proper constraints
+          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          container.appendChild(svg);
+
+          console.log('[ags-markmap] SVG created, initializing markmap...');
+
+          // Create markmap with basic options
+          const options = {
+            autoFit: true,
+            zoom: true,
+            pan: true,
+            ...window.agsMarkmapOptions
+          };
+
+          console.log('[ags-markmap] Creating markmap with options:', options);
+
+          const mm = window.markmap.Markmap.create(svg, options, root);
+
+          console.log('[ags-markmap] Markmap created successfully!', mm);
+
+          // Add a subtle success indicator that doesn't interfere with layout
+          const successDiv = document.createElement('div');
+          successDiv.style.cssText = 'position: absolute; top: 5px; right: 5px; padding: 5px 10px; background: rgba(212, 237, 218, 0.9); color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; font-size: 12px; font-weight: bold; z-index: 10;';
+          successDiv.textContent = '✅ Interactive mindmap - zoom & pan enabled';
+          container.style.position = 'relative';
+          container.appendChild(successDiv);
+
+          // Verify rendering after a short delay
+          setTimeout(() => {
+            if (svg.children.length > 0) {
+              console.log('[ags-markmap] SVG rendered with', svg.children.length, 'child elements');
+            } else {
+              console.warn('[ags-markmap] SVG appears empty after rendering');
+              // Add fallback visualization
+              svg.innerHTML = `
+                <g transform="translate(400,250)">
+                  <circle r="40" fill="#4285f4" stroke="#1a73e8" stroke-width="2"/>
+                  <text y="6" text-anchor="middle" fill="white" font-family="Arial" font-size="12">Markmap</text>
+                  <text y="-60" text-anchor="middle" fill="#1a73e8" font-family="Arial" font-size="14">✓ AGS Markmap Active</text>
+                </g>
+              `;
+            }
+
+            // Fit the view
+            if (mm && mm.fit) {
+              mm.fit();
+              console.log('[ags-markmap] View fitted');
+            }
+          }, 200);
+
+        } catch (error) {
+          console.error('[ags-markmap] Error creating markmap:', error);
+          container.innerHTML = `<div style="color: red; padding: 20px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 4px;">
+            <strong>❌ Error:</strong> ${error.message}<br>
+            <small>Check browser console for details</small>
+          </div>`;
+        }
+      } else {
+        console.warn('[ags-markmap] Markmap libraries not found');
+        container.innerHTML = `<div style="color: orange; padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px;">
+          <strong>⚠️ Warning:</strong> Markmap libraries not loaded.<br>
+          <small>Check network connectivity and CDN availability</small>
+        </div>`;
+      }
+    }, 1500); // Increased timeout for better CDN loading
+  });
+</script>
+
+{{- else -}}
+<script>
+  console.log('[ags-markmap] Module disabled on this page')
+</script>
+{{- end -}}
