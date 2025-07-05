@@ -12,7 +12,7 @@
     "url": "https://github.com/agsayyed/ags-markmap/issues"
   },
   "scripts": {
-    "clean": "echo nothing to clean"
+    "clean": "echo 'No build artifacts to clean - module uses CDN dependencies'"
   },
   "keywords": [
     "hugo",
@@ -23,19 +23,5 @@
     "module",
     "markmap"
   ],
-  "homepage": "",
-  "dependencies": {
-    "d3": "^6.7.0",
-    "markmap-lib": "^0.14.4",
-    "markmap-view": "^0.14.4"
-  },
-  "devDependencies": {
-    "@fullhuman/postcss-purgecss": "^7.0.0",
-    "@types/d3": "^6.7.5",
-    "@types/node": "^22.10.6",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.0",
-    "postcss-cli": "^11.0.0",
-    "prettier-plugin-go-template": "^0.0.15"
-  }
+  "homepage": "https://github.com/agsayyed/ags-markmap"
 }
