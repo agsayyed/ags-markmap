@@ -10,21 +10,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.1] - 2025-07-06
 
 ### Added
+
 - Environment-aware debug logging
 - Smart development/production detection
 - Conditional console logging that only shows in development
 
 ### Changed
+
 - Debug messages now only appear in development environment
 - Improved logging with `[AGS-Markmap Debug]` prefix
 - Better developer experience with detailed debugging in dev mode
 
 ### Fixed
+
 - Production console output is now clean without debug noise
 
 ## [0.1.0] - 2025-07-05
 
 ### Added
+
 - Initial release of ags-markmap Hugo module
 - Automatic mindmap generation from page headings
 - Front matter activation with `ags_markmap: true`
@@ -36,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Zero build dependencies
 
 ### Features
+
 - Dynamic heading extraction (H1-H6)
 - SVG-based interactive mind maps
 - Click-to-navigate functionality
