@@ -1,6 +1,6 @@
 {
   "name": "ags-markmap",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "Description": "This module allow user to auto-render an interactive Markmap at the top of any markdowwn page. It is activated when frontmatter contains the field `ags-markmap: true`",
   "repository": {
     "type": "git",
