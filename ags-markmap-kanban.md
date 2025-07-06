@@ -78,37 +78,69 @@
     - Configurable depth limits
     ```
 
-## Sprint Backlog (Sprint 1: Architecture Refactoring)
+## Sprint Backlog (Sprint 2: Feature Extensions)
+
+- Story: Implement External Link Navigation Support
+
+  - due: 2025-07-25
+  - tags: [linking, navigation, external, feature]
+  - priority: high
+  - workload: Normal
+  - steps:
+    - [ ] Extend NodeFactory to support LinkNode type
+    - [ ] Update ContentParser to detect external links
+    - [ ] Implement LinkNodeFactory with URL validation
+    - [ ] Add visual indicators for external vs internal nodes
+    - [ ] Implement click handling for external navigation
+    - [ ] Add comprehensive error handling for invalid URLs
+
+    ```md
+    Add support for external links in mindmap nodes to enable navigation to other pages/sites.
+
+    Acceptance Criteria:
+    - Parse and detect external links in content
+    - Render clickable nodes with external link indicators
+    - Open external links in new tab/window
+    - Visual distinction for external vs internal nodes
+    - URL validation and error handling
+
+    Architecture Ready:
+    - Factory Pattern enables easy LinkNode addition
+    - Strategy Pattern allows new parsing strategies
+    - Adapter Pattern isolates external navigation logic
+    ```
 
 - Story: Design and Document Module Architecture
 
-  - due: 2025-07-12
-  - tags: [architecture, design-patterns, uml, documentation]
+  - completed: 2025-07-06
+  - tags: [architecture, design-patterns, uml, documentation, completed]
   - priority: critical
   - workload: Hard
   - defaultExpanded: true
   - steps:
     - [x] Research design patterns suitable for TypeScript modules
-    - [ ] Create UML Component Diagram
-    - [ ] Design class hierarchy and interfaces
-    - [ ] Document pattern implementation strategy
-    - [ ] Review and validate architecture design
+    - [x] Create UML Component Diagram
+    - [x] Design class hierarchy and interfaces
+    - [x] Document pattern implementation strategy
+    - [x] Review and validate architecture design
 
     ```md
-    Create comprehensive architectural design using modern design patterns and UML documentation.
+    ✅ Successfully created and implemented comprehensive architectural design with modern design patterns!
 
-    Design Patterns to Implement:
-    - Module Pattern: Core encapsulation and namespace management
-    - Factory Pattern: Node creation for different content types
-    - Strategy Pattern: Content parsing strategies (headings, tables, links)
-    - Observer Pattern: Event handling for user interactions
-    - Adapter Pattern: External library integration (D3, markmap-view)
+    Design Patterns Implemented:
+    - Module Pattern: Core encapsulation and namespace management ✅
+    - Factory Pattern: Node creation for different content types ✅
+    - Strategy Pattern: Content parsing strategies (headings, tables, links) ✅
+    - Observer Pattern: Event handling foundation (ready for user interactions) ✅
+    - Adapter Pattern: External library integration (D3, markmap-view) ✅
+    - Builder Pattern: Complex tree structure construction ✅
 
-    Deliverables:
-    - UML Component Diagram showing module structure
-    - Class Diagram showing pattern relationships
-    - Sequence Diagram for initialization flow
-    - Architecture documentation with implementation guide
+    Deliverables Completed:
+    - UML Component Diagram showing complete module structure ✅
+    - Class hierarchy with 11 TypeScript modules ✅
+    - Interface definitions with proper type safety ✅
+    - Architecture documentation with implementation guide ✅
+    - Working implementation following all design patterns ✅
     ```
 
 - Story: Refactor to TypeScript Module Pattern
@@ -165,7 +197,78 @@
 
 ## In Progress
 
+- Story: Implement Factory Pattern for Node Creation
+
+  - due: 2025-07-18
+  - tags: [factory-pattern, nodes, typescript, architecture]
+  - priority: high
+  - workload: Normal
+  - steps:
+    - [x] Design BaseNode interface
+    - [x] Create HeadingNodeFactory
+    - [ ] Create TableNodeFactory (preparation)
+    - [ ] Create LinkNodeFactory (preparation)
+    - [x] Implement NodeFactory orchestrator
+    - [ ] Add unit tests for factories
+
+    ```md
+    🚧 In Progress: Factory pattern base implementation completed, extending for new node types.
+
+    Completed:
+    - BaseNode interface with common properties
+    - HeadingNodeFactory for text content nodes
+    - NodeFactory orchestrator for centralized creation
+    - Type safety and validation for all node types
+
+    Next Steps:
+    - Implement TableNodeFactory for future table support
+    - Implement LinkNodeFactory for future link support
+    - Add comprehensive unit tests for all factories
+    ```
+
 ## Review/QA
+
+- Story: Refactor to TypeScript Module Pattern
+
+  - completed: 2025-07-06
+  - tags: [refactoring, typescript, module-pattern, core, completed]
+  - priority: critical
+  - workload: Extreme
+  - steps:
+    - [x] Set up TypeScript build configuration
+    - [x] Define core interfaces and types
+    - [x] Create modular component structure
+    - [x] Implement dependency injection patterns
+    - [x] Add comprehensive error handling
+    - [x] Update Hugo template integration
+
+    ```md
+    ✅ MAJOR MILESTONE: Successfully refactored 288-line inline script into modular TypeScript architecture!
+
+    Completed Achievements:
+    - Converted inline script to 11 separate TypeScript modules
+    - Implemented proper interfaces and types (BaseNode, MarkmapOptions, etc.)
+    - Created modular component structure following MCQ module pattern
+    - Established dependency injection with proper separation of concerns
+    - Added comprehensive error handling and environment-aware logging
+    - Updated Hugo template integration to use asset pipeline
+    - Reduced main template from 288 lines to 27 lines (90% reduction!)
+
+    Architecture Implemented:
+    - Module Pattern: Core encapsulation via AGSMarkmap class
+    - Factory Pattern: NodeFactory for extensible node creation
+    - Strategy Pattern: ContentParser for flexible content extraction
+    - Adapter Pattern: DependencyLoader and SVGRenderer for external libs
+    - Builder Pattern: TreeBuilder for hierarchical structure construction
+    - Observer Pattern: Ready for future event handling extensions
+
+    Technical Stack:
+    - TypeScript with proper type definitions
+    - Hugo asset pipeline integration
+    - Environment-aware debugging
+    - CDN dependency management
+    - Backward compatibility maintained
+    ```
 
 - Story: Create UML Component Diagram
 
