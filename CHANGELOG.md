@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-07-06
+
+### Added
+
+- Modular TypeScript architecture following MVC pattern
+- Type definitions for all core interfaces (MarkMapConfig, MarkMapOptions, etc.)
+- Model-View-Controller separation with dedicated classes
+- Configuration validation and error handling
+- Component-based architecture similar to MCQ module pattern
+- Comprehensive architecture documentation with UML diagrams
+
+### Changed
+
+- **BREAKING**: Refactored from inline JavaScript to modular TypeScript
+- Module now follows established project patterns and conventions
+- Improved code organization with dedicated directories for types, models, views, controllers
+- Enhanced maintainability and testability
+- Hugo partial updated to use asset pipeline for TypeScript compilation
+- Better separation of concerns and modularity
+
+### Improved
+
+- Code quality and maintainability significantly enhanced
+- Better error handling and debugging capabilities
+- Cleaner codebase following TypeScript best practices
+- Documentation includes detailed component diagrams and architecture overview
+
 ## [0.1.2] - 2025-07-06
 
 ### Changed
