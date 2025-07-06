@@ -308,6 +308,37 @@
 
 ## Done
 
+- Story: Sprint 1 - TypeScript Refactoring & Architecture v0.2.0
+
+  - completed: 2025-07-06
+  - tags: [typescript, architecture, refactoring, sprint1, completed]
+  - priority: critical
+  - workload: Hard
+
+    ```md
+    ✅ Successfully completed Sprint 1 with comprehensive TypeScript refactoring.
+
+    Major Achievements:
+    - Complete migration from inline JavaScript to modular TypeScript
+    - Implemented MVC architecture following MCQ module pattern
+    - Created comprehensive type definitions and interfaces
+    - Organized code into logical directories (types, models, views, controllers)
+    - Updated Hugo partial to use asset pipeline for TypeScript compilation
+    - Enhanced error handling, validation, and debugging capabilities
+    - Documented architecture with UML component diagrams
+    - Followed proper Git workflow with versioning and tagging
+
+    Technical Deliverables:
+    - Modular TypeScript codebase with proper separation of concerns
+    - Type-safe interfaces (MarkMapConfig, MarkMapOptions, etc.)
+    - Model-View-Controller pattern implementation
+    - Comprehensive documentation and architecture diagrams
+    - Version v0.2.0 released and tagged on GitHub
+    - Updated CHANGELOG.md with detailed release notes
+
+    Ready for Sprint 2: External link navigation and advanced features
+    ```
+
 - Story: MVP Release v0.1.2 - UI Polish
 
   - completed: 2025-07-06
