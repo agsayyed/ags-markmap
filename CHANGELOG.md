@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2025-07-06
+
+### Changed
+
+- Removed emoji symbol from markmap info box for cleaner UI appearance
+- Info box now shows clean text: "Interactive mindmap - zoom & pan enabled"
+
 ## [0.1.1] - 2025-07-06
 
 ### Added
