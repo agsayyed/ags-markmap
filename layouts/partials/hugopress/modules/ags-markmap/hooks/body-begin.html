@@ -1,0 +1,30 @@
+{{- /* AGS Markmap Hook: Load scripts and initialize markmap when enabled in front matter */ -}}
+{{- if .Page.Params.ags_markmap -}}
+
+{{- /* Check if we're in development environment */ -}}
+{{- $isDev := eq hugo.Environment "development" -}}
+
+{{- /* Use UNPKG with a known working version */ -}}
+<script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+<script src="https://unpkg.com/markmap-view@0.15.8/dist/browser/index.js"></script>
+
+{{- /* Pass options to JavaScript */ -}}
+{{- $opts := .Page.Params.ags_markmap_opts | default dict | jsonify -}}
+<script>
+  // Set Hugo environment for TypeScript module
+  window.HUGO_ENVIRONMENT = "{{ hugo.Environment }}";
+  
+  // Pass options to TypeScript module
+  window.agsMarkmapOptions = {{ $opts | safeJS }};
+  
+  {{- if $isDev -}}
+  console.debug('[ags-markmap] Environment:', window.HUGO_ENVIRONMENT);
+  console.debug('[ags-markmap] Options:', window.agsMarkmapOptions);
+  {{- end -}}
+</script>
+
+{{- /* Load TypeScript module via Hugo's asset pipeline */ -}}
+{{- $js := resources.Get "hb/modules/agsayyed/js/index.ts" | js.Build -}}
+<script src="{{ $js.RelPermalink }}"></script>
+
+{{- end -}}
