@@ -36,15 +36,9 @@ export class TreeBuilder {
     return rootNode;
   }
 
-  private filterDuplicateTitle(
-    headings: HeadingElement[],
-    title: string
-  ): HeadingElement[] {
+  private filterDuplicateTitle(headings: HeadingElement[], title: string): HeadingElement[] {
     return headings.filter((heading, index) => {
-      if (
-        index === 0 &&
-        heading.text.toLowerCase().trim() === title.toLowerCase().trim()
-      ) {
+      if (index === 0 && heading.text.toLowerCase().trim() === title.toLowerCase().trim()) {
         log.debug('Skipping first heading as it matches page title');
         return false;
       }
@@ -52,22 +46,14 @@ export class TreeBuilder {
     });
   }
 
-  private buildHierarchy(
-    rootNode: MarkmapNode,
-    headings: HeadingElement[]
-  ): void {
-    const stack: { node: MarkmapNode; level: number }[] = [
-      { node: rootNode, level: 0 },
-    ];
+  private buildHierarchy(rootNode: MarkmapNode, headings: HeadingElement[]): void {
+    const stack: { node: MarkmapNode; level: number }[] = [{ node: rootNode, level: 0 }];
 
     headings.forEach((heading, index) => {
       const newNode = this.nodeFactory.createHeadingNode(heading, index);
 
       // Find the correct parent level
-      while (
-        stack.length > 1 &&
-        stack[stack.length - 1].level >= heading.level
-      ) {
+      while (stack.length > 1 && stack[stack.length - 1].level >= heading.level) {
         stack.pop();
       }
 
@@ -83,10 +69,7 @@ export class TreeBuilder {
   private countNodes(node: MarkmapNode): number {
     let count = 1; // Count current node
     if (node.children) {
-      count += node.children.reduce(
-        (sum, child) => sum + this.countNodes(child),
-        0
-      );
+      count += node.children.reduce((sum, child) => sum + this.countNodes(child), 0);
     }
     return count;
   }

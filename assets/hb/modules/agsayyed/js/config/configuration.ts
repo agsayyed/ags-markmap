@@ -1,7 +1,4 @@
-import {
-  Configuration as IConfiguration,
-  MarkmapOptions,
-} from '../types/markmap.types';
+import { Configuration as IConfiguration, MarkmapOptions } from '../types/markmap.types';
 import log from '../utils/logger';
 
 export class Configuration implements IConfiguration {
@@ -29,7 +26,7 @@ export class Configuration implements IConfiguration {
       duration: 750,
       initialExpandLevel: 2,
       pan: true,
-      zoom: true,
+      zoom: true
     };
 
     // Merge with custom options from Hugo front matter
@@ -37,9 +34,7 @@ export class Configuration implements IConfiguration {
     this.options = { ...defaultOptions, ...hugoOptions, ...customOptions };
 
     log.debug('Configuration initialized');
-    log.debug(
-      `Environment: ${this.isDevelopment ? 'development' : 'production'}`
-    );
+    log.debug(`Environment: ${this.isDevelopment ? 'development' : 'production'}`);
     log.debug(`Options: ${JSON.stringify(this.options)}`);
   }
 

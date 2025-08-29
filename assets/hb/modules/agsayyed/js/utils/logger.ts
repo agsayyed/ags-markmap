@@ -40,13 +40,9 @@ export class Logger implements ILogger {
 // Get environment from Hugo or default to production
 const environment: string = (window as any).HUGO_ENVIRONMENT || 'production';
 if (environment === 'unknown') {
-  console.info(
-    '[ags-markmap] Environment is unknown, defaulting to production'
-  );
+  console.info('[ags-markmap] Environment is unknown, defaulting to production');
 } else if (environment === 'development') {
-  console.debug(
-    `[ags-markmap] Creating logger instance with environment: ${environment}`
-  );
+  console.debug(`[ags-markmap] Creating logger instance with environment: ${environment}`);
 }
 
 const log = new Logger(environment);

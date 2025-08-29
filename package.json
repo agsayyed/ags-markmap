@@ -1,7 +1,8 @@
 {
   "name": "ags-markmap",
   "version": "0.2.0",
-  "Description": "This module allow user to auto-render an interactive Markmap at the top of any markdowwn page. It is activated when frontmatter contains the field `ags-markmap: true`",
+  "private": true,
+  "description": "This module allow user to auto-render an interactive Markmap at the top of any markdowwn page. It is activated when frontmatter contains the field `ags-markmap: true`",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/agsayyed/ags-markmap.git"
@@ -12,17 +13,15 @@
     "url": "https://github.com/agsayyed/ags-markmap/issues"
   },
   "scripts": {
-    "build": "echo 'Markmap module - no build step required'",
-    "clean": "echo 'No build artifacts to clean - module uses CDN dependencies'"
+    "build": "echo 'No build step required'",
+    "clean": "echo 'No clean step required'",
+    "lint": "pnpm run lint:js && pnpm run lint:scss && pnpm run lint:md",
+    "lint:js": "eslint --ext .js,.ts,.jsx,.tsx . && echo '✅ ESLint completed successfully'",
+    "lint:scss": "stylelint '**/*.{css,scss}' && echo '✅ Stylelint completed successfully'",
+    "lint:md": "markdownlint-cli2 '**/*.md' && echo '✅ Markdownlint completed successfully'",
+    "format": "prettier --write '**/*.{js,ts,json,md,yml,yaml}' --ignore-path .prettierignore",
+    "format:md": "prettier --write '**/*.md' --ignore-path .prettierignore"
   },
-  "keywords": [
-    "hugo",
-    "module",
-    "hugo",
-    "HBstack",
-    "HBmod",
-    "module",
-    "markmap"
-  ],
+  "keywords": ["hugo", "module", "hugo", "HBstack", "HBmod", "module", "markmap"],
   "homepage": "https://github.com/agsayyed/ags-markmap"
 }

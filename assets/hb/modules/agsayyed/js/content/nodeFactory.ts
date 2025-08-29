@@ -2,17 +2,14 @@ import { MarkmapNode, HeadingElement, TableData, LinkData } from '../types/markm
 import log from '../utils/logger';
 
 export class NodeFactory {
-  public createHeadingNode(
-    heading: HeadingElement,
-    index: number
-  ): MarkmapNode {
+  public createHeadingNode(heading: HeadingElement, index: number): MarkmapNode {
     return {
       content: heading.text,
       children: [],
       payload: {
         level: heading.level,
-        index: index,
-      },
+        index: index
+      }
     };
   }
 
@@ -22,8 +19,8 @@ export class NodeFactory {
       children: [],
       payload: {
         level: 0,
-        index: -1,
-      },
+        index: -1
+      }
     };
   }
 
@@ -33,8 +30,8 @@ export class NodeFactory {
       children: [],
       payload: {
         level: 1,
-        index: 0,
-      },
+        index: 0
+      }
     };
   }
 }

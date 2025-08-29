@@ -25,7 +25,7 @@ export class AGSMarkmap {
       isLoading: false,
       hasError: false,
       headingCount: 0,
-      treeDepth: 0,
+      treeDepth: 0
     };
 
     log.debug('AGS Markmap instance created');
@@ -44,9 +44,7 @@ export class AGSMarkmap {
       // Check if container exists
       const container = this.config.getContainer();
       if (!container) {
-        throw new Error(
-          `Container with ID '${this.config.containerId}' not found`
-        );
+        throw new Error(`Container with ID '${this.config.containerId}' not found`);
       }
 
       // Extract content and build tree
@@ -68,9 +66,7 @@ export class AGSMarkmap {
       this.state.hasError = false;
 
       log.separator('AGS Markmap initialized successfully');
-      log.debug(
-        `Processed ${this.state.headingCount} headings, tree depth: ${this.state.treeDepth}`
-      );
+      log.debug(`Processed ${this.state.headingCount} headings, tree depth: ${this.state.treeDepth}`);
     } catch (error) {
       this.state.isLoading = false;
       this.state.hasError = true;
@@ -104,9 +100,7 @@ export class AGSMarkmap {
       return currentDepth;
     }
 
-    const childDepths = node.children.map((child: MarkmapNode) =>
-      this.calculateTreeDepth(child, currentDepth + 1)
-    );
+    const childDepths = node.children.map((child: MarkmapNode) => this.calculateTreeDepth(child, currentDepth + 1));
 
     return Math.max(...childDepths);
   }

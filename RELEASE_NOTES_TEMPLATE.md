@@ -4,21 +4,11 @@
 
 ### ✨ New Features
 
-- [Feature 1]: Description
-- [Feature 2]: Description
-
 ### 🐛 Bug Fixes
-
-- [Fix 1]: Description
-- [Fix 2]: Description
 
 ### 📚 Documentation
 
-- [Doc 1]: Description
-
 ### 🔧 Internal Changes
-
-- [Change 1]: Description
 
 ---
 
@@ -39,7 +29,7 @@ Add to any page frontmatter:
 
 ```yaml
 ---
-title: "My Page"
+title: 'My Page'
 ags_markmap: true
 ---
 ```

@@ -3,7 +3,6 @@
 ## Product Backlog
 
 - Epic: AGS Markmap Interactive Mindmap Module for Hugo/HBStack
-
   - due: 2025-08-15
   - tags: [typescript, hugo, mindmap, interactive, module]
   - priority: critical
@@ -11,10 +10,11 @@
   - defaultExpanded: true
 
     ```md
-    Develop a comprehensive TypeScript module for Hugo/HBStack sites that generates
-    interactive mindmaps from page content, enabling easy navigation and content understanding.
+    Develop a comprehensive TypeScript module for Hugo/HBStack sites that generates interactive mindmaps from page content, enabling easy
+    navigation and content understanding.
 
     Core Features:
+
     - Dynamic heading extraction and tree building
     - Interactive SVG mindmap rendering
     - Multi-level content depth support (up to 4 levels)
@@ -25,7 +25,6 @@
     ```
 
 - Story: Implement External Link Navigation Support
-
   - due: 2025-07-25
   - tags: [linking, navigation, external, feature]
   - priority: high
@@ -35,6 +34,7 @@
     Add support for external links in mindmap nodes to enable navigation to other pages/sites.
 
     Acceptance Criteria:
+
     - Parse and detect external links in content
     - Render clickable nodes with external link indicators
     - Open external links in new tab/window
@@ -43,7 +43,6 @@
     ```
 
 - Story: Add Markdown Table Support
-
   - due: 2025-07-30
   - tags: [tables, markdown, parsing, feature]
   - priority: medium
@@ -53,6 +52,7 @@
     Extend content parsing to include markdown tables as mindmap nodes.
 
     Acceptance Criteria:
+
     - Detect and parse markdown tables in content
     - Convert table structure to mindmap sub-nodes
     - Maintain table data relationships in tree structure
@@ -61,7 +61,6 @@
     ```
 
 - Story: Extend Content Depth to 4 Levels
-
   - due: 2025-08-05
   - tags: [depth, hierarchy, parsing, feature]
   - priority: medium
@@ -71,6 +70,7 @@
     Increase mindmap depth support from current 2 levels to 4 levels for better content representation.
 
     Acceptance Criteria:
+
     - Parse H1-H6 headings with proper hierarchy
     - Build 4-level deep tree structures
     - Maintain visual clarity with increased depth
@@ -81,7 +81,6 @@
 ## Sprint Backlog (Sprint 2: Feature Extensions)
 
 - Story: Implement External Link Navigation Support
-
   - due: 2025-07-25
   - tags: [linking, navigation, external, feature]
   - priority: high
@@ -98,6 +97,7 @@
     Add support for external links in mindmap nodes to enable navigation to other pages/sites.
 
     Acceptance Criteria:
+
     - Parse and detect external links in content
     - Render clickable nodes with external link indicators
     - Open external links in new tab/window
@@ -105,13 +105,13 @@
     - URL validation and error handling
 
     Architecture Ready:
+
     - Factory Pattern enables easy LinkNode addition
     - Strategy Pattern allows new parsing strategies
     - Adapter Pattern isolates external navigation logic
     ```
 
 - Story: Design and Document Module Architecture
-
   - completed: 2025-07-06
   - tags: [architecture, design-patterns, uml, documentation, completed]
   - priority: critical
@@ -128,6 +128,7 @@
     ✅ Successfully created and implemented comprehensive architectural design with modern design patterns!
 
     Design Patterns Implemented:
+
     - Module Pattern: Core encapsulation and namespace management ✅
     - Factory Pattern: Node creation for different content types ✅
     - Strategy Pattern: Content parsing strategies (headings, tables, links) ✅
@@ -136,6 +137,7 @@
     - Builder Pattern: Complex tree structure construction ✅
 
     Deliverables Completed:
+
     - UML Component Diagram showing complete module structure ✅
     - Class hierarchy with 11 TypeScript modules ✅
     - Interface definitions with proper type safety ✅
@@ -144,7 +146,6 @@
     ```
 
 - Story: Refactor to TypeScript Module Pattern
-
   - due: 2025-07-15
   - tags: [refactoring, typescript, module-pattern, core]
   - priority: critical
@@ -161,6 +162,7 @@
     Restructure current inline script code into proper TypeScript module with design patterns.
 
     Technical Requirements:
+
     - Convert inline script to TypeScript module
     - Implement proper interfaces and types
     - Create modular component structure
@@ -170,7 +172,6 @@
     ```
 
 - Story: Implement Factory Pattern for Node Creation
-
   - due: 2025-07-18
   - tags: [factory-pattern, nodes, typescript, architecture]
   - priority: high
@@ -187,6 +188,7 @@
     Create factory classes for different types of mindmap nodes to support extensibility.
 
     Components to Implement:
+
     - BaseNode interface with common properties
     - HeadingNodeFactory for text content nodes
     - TableNodeFactory for future table support
@@ -198,7 +200,6 @@
 ## In Progress
 
 - Story: Implement Factory Pattern for Node Creation
-
   - due: 2025-07-18
   - tags: [factory-pattern, nodes, typescript, architecture]
   - priority: high
@@ -215,12 +216,14 @@
     🚧 In Progress: Factory pattern base implementation completed, extending for new node types.
 
     Completed:
+
     - BaseNode interface with common properties
     - HeadingNodeFactory for text content nodes
     - NodeFactory orchestrator for centralized creation
     - Type safety and validation for all node types
 
     Next Steps:
+
     - Implement TableNodeFactory for future table support
     - Implement LinkNodeFactory for future link support
     - Add comprehensive unit tests for all factories
@@ -229,7 +232,6 @@
 ## Review/QA
 
 - Story: Refactor to TypeScript Module Pattern
-
   - completed: 2025-07-06
   - tags: [refactoring, typescript, module-pattern, core, completed]
   - priority: critical
@@ -246,6 +248,7 @@
     ✅ MAJOR MILESTONE: Successfully refactored 288-line inline script into modular TypeScript architecture!
 
     Completed Achievements:
+
     - Converted inline script to 11 separate TypeScript modules
     - Implemented proper interfaces and types (BaseNode, MarkmapOptions, etc.)
     - Created modular component structure following MCQ module pattern
@@ -255,6 +258,7 @@
     - Reduced main template from 288 lines to 27 lines (90% reduction!)
 
     Architecture Implemented:
+
     - Module Pattern: Core encapsulation via AGSMarkmap class
     - Factory Pattern: NodeFactory for extensible node creation
     - Strategy Pattern: ContentParser for flexible content extraction
@@ -263,6 +267,7 @@
     - Observer Pattern: Ready for future event handling extensions
 
     Technical Stack:
+
     - TypeScript with proper type definitions
     - Hugo asset pipeline integration
     - Environment-aware debugging
@@ -271,7 +276,6 @@
     ```
 
 - Story: Create UML Component Diagram
-
   - completed: 2025-07-06
   - tags: [uml, documentation, architecture, completed]
   - priority: high
@@ -289,6 +293,7 @@
     ✅ Successfully created UML Component Diagram showing module architecture and dependencies.
 
     Completed Deliverables:
+
     - C4 Component Diagram using Mermaid syntax
     - Comprehensive documentation of 11 core components
     - Design pattern mapping (Module, Factory, Strategy, Observer, Adapter, Builder)
@@ -298,6 +303,7 @@
     - Architecture extension points identified
 
     Technical Achievements:
+
     - Visual representation of modular architecture
     - Clear separation of concerns between components
     - External dependency isolation patterns
@@ -309,7 +315,6 @@
 ## Done
 
 - Story: Sprint 1 - TypeScript Refactoring & Architecture v0.2.0
-
   - completed: 2025-07-06
   - tags: [typescript, architecture, refactoring, sprint1, completed]
   - priority: critical
@@ -319,6 +324,7 @@
     ✅ Successfully completed Sprint 1 with comprehensive TypeScript refactoring.
 
     Major Achievements:
+
     - Complete migration from inline JavaScript to modular TypeScript
     - Implemented MVC architecture following MCQ module pattern
     - Created comprehensive type definitions and interfaces
@@ -329,6 +335,7 @@
     - Followed proper Git workflow with versioning and tagging
 
     Technical Deliverables:
+
     - Modular TypeScript codebase with proper separation of concerns
     - Type-safe interfaces (MarkMapConfig, MarkMapOptions, etc.)
     - Model-View-Controller pattern implementation
@@ -340,7 +347,6 @@
     ```
 
 - Story: MVP Release v0.1.2 - UI Polish
-
   - completed: 2025-07-06
   - tags: [mvp, ui, release, completed]
   - priority: high
@@ -350,6 +356,7 @@
     ✅ Successfully released minimum viable product with clean UI improvements.
 
     Completed Features:
+
     - Basic mindmap rendering from page headings
     - CDN-based dependency loading (D3, markmap-view)
     - Environment-aware debug logging (dev only)
@@ -359,6 +366,7 @@
     - Production-ready error handling and fallbacks
 
     Release Details:
+
     - Version: v0.1.2 released on GitHub
     - Semantic versioning implemented
     - CHANGELOG.md updated

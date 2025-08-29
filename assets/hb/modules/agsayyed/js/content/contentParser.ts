@@ -5,9 +5,7 @@ export class ContentParser {
   public extractHeadings(): HeadingElement[] {
     log.debug('Starting heading extraction');
 
-    const headings = Array.from(
-      document.querySelectorAll('h1, h2, h3, h4, h5, h6')
-    )
+    const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'))
       .filter((h) => this.isValidHeading(h as HTMLElement))
       .map((h) => this.createHeadingElement(h as HTMLElement))
       .filter((h) => h.text.length > 0);
@@ -18,23 +16,19 @@ export class ContentParser {
 
   private isValidHeading(element: HTMLElement): boolean {
     // Filter out navigation and system headings
-    const parent = element.closest(
-      '.hb-docs-sidebar, .hb-docs-toc, nav, .navbar, .breadcrumb'
-    );
+    const parent = element.closest('.hb-docs-sidebar, .hb-docs-toc, nav, .navbar, .breadcrumb');
     const textContent = element.textContent?.trim();
     return !parent && Boolean(textContent && textContent.length > 0);
   }
 
   private createHeadingElement(element: HTMLElement): HeadingElement {
-    const text = this.cleanHeadingText(
-      element.textContent || element.innerText || ''
-    );
+    const text = this.cleanHeadingText(element.textContent || element.innerText || '');
     const level = parseInt(element.tagName.charAt(1));
 
     return {
       level,
       text,
-      element,
+      element
     };
   }
 

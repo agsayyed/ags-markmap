@@ -1,6 +1,7 @@
 # ags-markmap
 
-A Hugo module that automatically renders an interactive Markmap mind map from your page's headings. It integrates seamlessly with Hugo and HBStack framework.
+A Hugo module that automatically renders an interactive Markmap mind map from your page's headings. It integrates seamlessly with Hugo and
+HBStack framework.
 
 ## Features
 
@@ -46,13 +47,14 @@ To enable Markmap on any page, add this to your front matter:
 
 ```yaml
 ---
-title: "My Page with Markmap"
+title: 'My Page with Markmap'
 date: 2025-07-04
 ags_markmap: true
 ---
 ```
 
-The mind map will automatically render at the top of your content, extracting headings from your page and creating an interactive visualization.
+The mind map will automatically render at the top of your content, extracting headings from your page and creating an interactive
+visualization.
 
 ## Configuration
 
@@ -62,11 +64,11 @@ Configure the module in your site's `config.yaml`:
 params:
   hb:
     ags_markmap:
-      enable: true        # Enable or disable globally
-      placement: top      # Placement location
-      height: 400px       # Height of the mind map
-      autoFit: true       # Auto-fit to container
-      duration: 400       # Animation duration (ms)
+      enable: true # Enable or disable globally
+      placement: top # Placement location
+      height: 400px # Height of the mind map
+      autoFit: true # Auto-fit to container
+      duration: 400 # Animation duration (ms)
 ```
 
 ## How It Works

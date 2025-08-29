@@ -19,9 +19,7 @@ export class SVGRenderer {
       const container = this.config.getContainer();
 
       if (!container) {
-        throw new Error(
-          `Container with ID '${this.config.containerId}' not found`
-        );
+        throw new Error(`Container with ID '${this.config.containerId}' not found`);
       }
 
       this.showLoadingState(container);

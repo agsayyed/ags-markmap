@@ -38,9 +38,7 @@ export class DependencyLoader {
 
   private checkDependencyStatus(): DependencyStatus {
     const hasD3 = typeof (window as any).d3 !== 'undefined';
-    const hasMarkmap =
-      typeof (window as any).markmap !== 'undefined' &&
-      (window as any).markmap.Markmap;
+    const hasMarkmap = typeof (window as any).markmap !== 'undefined' && (window as any).markmap.Markmap;
     const hasGlobalMarkmap = typeof (window as any).Markmap !== 'undefined';
     const hasMarkmapView = typeof (window as any).markmapView !== 'undefined';
 
@@ -49,7 +47,7 @@ export class DependencyLoader {
     return {
       d3: hasD3,
       markmap: markmapLoaded,
-      allLoaded: hasD3 && markmapLoaded,
+      allLoaded: hasD3 && markmapLoaded
     };
   }
 
@@ -58,19 +56,14 @@ export class DependencyLoader {
     log.debug(`window.markmap: ${typeof (window as any).markmap}`);
     log.debug(`window.markmapView: ${typeof (window as any).markmapView}`);
 
-    const globals = Object.keys(window).filter((k) =>
-      k.toLowerCase().includes('mark')
-    );
+    const globals = Object.keys(window).filter((k) => k.toLowerCase().includes('mark'));
     if (globals.length > 0) {
       log.debug(`Available markmap globals: ${globals.join(', ')}`);
     }
   }
 
   public getMarkmapAPI(): any {
-    const markmap =
-      (window as any).markmap?.Markmap ||
-      (window as any).Markmap ||
-      (window as any).markmapView?.Markmap;
+    const markmap = (window as any).markmap?.Markmap || (window as any).Markmap || (window as any).markmapView?.Markmap;
 
     if (!markmap) {
       throw new Error('Markmap API not available');
