@@ -1,8 +1,10 @@
 {{- /* AGS Markmap Hook: Load scripts and initialize markmap when enabled in front matter */ -}}
+
+{{/* Include diagnostic panel - should be available even if markmap isn't enabled */}}
+{{- partial "hugopress/modules/ags-markmap/debug/diagnostic-panel.html" . -}}
+
 {{- if .Page.Params.ags_markmap -}}
 
-{{/* Include diagnostic panel */}}
-{{- partial "hugopress/modules/ags-markmap/debug/diagnostic-panel.html" . -}}
 {{- /* Check if we're in development environment */ -}}
 {{- $isDev := eq hugo.Environment "development" -}}
 

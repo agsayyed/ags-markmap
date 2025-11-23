@@ -72,16 +72,25 @@
       <div style="color: #9cdcfe;">AGS Markmap:</div>
       <div>• Instance: <span id="d-instance">-</span></div>
       <div>• Initialized: <span id="d-initialized">-</span></div>
-      <div>• Tree Nodes: <span id="d-tree-nodes">-</span></div>
+      <div>• State Info: <span id="d-tree-nodes">-</span></div>
     </div>
 
     <div style="margin-bottom: 10px;">
       <div style="color: #9cdcfe;">Config:</div>
-      {{- if .Site.Params.hb.ags_markmap -}}
-        <div>• Enable: <code>{{ .Site.Params.hb.ags_markmap.enable }}</code></div>
-        <div>• Debug: <code>{{ .Site.Params.hb.ags_markmap.debug }}</code></div>
+      {{- $hbParams := index site.Params "hb" -}}
+      {{- if $hbParams -}}
+        {{- $markmapConfig := index $hbParams "ags_markmap" -}}
+        {{- if $markmapConfig -}}
+          <div>• Enable: <code>{{ $markmapConfig.enable }}</code></div>
+          <div>• Debug: <code>{{ $markmapConfig.debug }}</code></div>
+          <div id="d-config-status" style="display:none;" data-has-config="true"></div>
+        {{- else -}}
+          <div style="color: #d16969;">• No ags_markmap config found</div>
+          <div id="d-config-status" style="display:none;" data-has-config="false"></div>
+        {{- end -}}
       {{- else -}}
-        <div style="color: #d16969;">• No config found in params.hb.ags_markmap</div>
+        <div style="color: #d16969;">• No hb config found</div>
+        <div id="d-config-status" style="display:none;" data-has-config="false"></div>
       {{- end -}}
     </div>
 
@@ -96,69 +105,80 @@
   const statusIcon = (value) => value ? '<span style="color: #4ec9b0;">✓</span>' : '<span style="color: #d16969;">✗</span>';
   
   const updateDebugInfo = () => {
-    document.getElementById('d-hugo-env').innerHTML = 
-      `<code>${window.HUGO_ENVIRONMENT || 'undefined'}</code>`;
-
-    const container = document.getElementById('ags-markmap-container');
-    document.getElementById('d-container').innerHTML = 
-      statusIcon(container) + (container ? ` (${container.tagName})` : ' Missing');
-    
-    const svg = container ? container.querySelector('svg') : null;
-    document.getElementById('d-svg').innerHTML = 
-      statusIcon(svg) + (svg ? ` (${svg.children.length} children)` : '');
-
-    // Count headings on page
-    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-    const validHeadings = Array.from(headings).filter(h => {
-      const parent = h.closest('.hb-docs-sidebar, .hb-docs-toc, nav, .navbar, .breadcrumb');
-      return !parent;
-    });
-    document.getElementById('d-headings').innerHTML = 
-      statusIcon(validHeadings.length > 0) + 
-      ` <code>${validHeadings.length} (${headings.length} total)</code>`;
-
-    document.getElementById('d-d3').innerHTML = 
-      statusIcon(typeof window.d3 !== 'undefined') + 
-      ` <code>${typeof window.d3}</code>` +
-      (window.d3 ? ` v${window.d3.version || 'unknown'}` : '');
-    
-    document.getElementById('d-markmap').innerHTML = 
-      statusIcon(typeof window.markmap !== 'undefined') + 
-      ` <code>${typeof window.markmap}</code>`;
-    
-    document.getElementById('d-markmap-view').innerHTML = 
-      statusIcon(window.markmap?.Markmap) + 
-      ` <code>${typeof window.markmap?.Markmap}</code>`;
-
-    const agsInstance = window.agsMarkmap;
-    document.getElementById('d-instance').innerHTML = 
-      statusIcon(agsInstance) + ` <code>${typeof agsInstance}</code>`;
-    
-    document.getElementById('d-initialized').innerHTML = 
-      statusIcon(agsInstance?.markmapView) + 
-      (agsInstance?.markmapView ? ' View created' : ' Not initialized');
-    
-    // Get tree node count from the markmap data
-    const treeNodes = agsInstance?.root ? countNodes(agsInstance.root) : 0;
-    document.getElementById('d-tree-nodes').innerHTML = 
-      `<code>${treeNodes} nodes</code>`;
-    
-    // Generate recommendations
-    generateRecommendations(container, svg, agsInstance, validHeadings.length);
-  };
-
-  const countNodes = (node) => {
-    if (!node) return 0;
-    let count = 1;
-    if (node.children && Array.isArray(node.children)) {
-      count += node.children.reduce((sum, child) => sum + countNodes(child), 0);
+    // Ensure elements exist
+    if (!document.getElementById('d-hugo-env')) {
+      console.warn('[Debug Panel] Elements not found yet');
+      return;
     }
-    return count;
+    
+    try {
+      document.getElementById('d-hugo-env').innerHTML = 
+        `<code>${window.HUGO_ENVIRONMENT || 'undefined'}</code>`;
+
+      const container = document.getElementById('ags-markmap-container');
+      document.getElementById('d-container').innerHTML = 
+        statusIcon(container) + (container ? ` (${container.tagName})` : ' Missing');
+      
+      const svg = container ? container.querySelector('svg') : null;
+      document.getElementById('d-svg').innerHTML = 
+        statusIcon(svg) + (svg ? ` (${svg.children.length} children)` : '');
+
+      // Count headings on page
+      const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      const validHeadings = Array.from(headings).filter(h => {
+        const parent = h.closest('.hb-docs-sidebar, .hb-docs-toc, nav, .navbar, .breadcrumb');
+        return !parent;
+      });
+      document.getElementById('d-headings').innerHTML = 
+        statusIcon(validHeadings.length > 0) + 
+        ` <code>${validHeadings.length} (${headings.length} total)</code>`;
+
+      document.getElementById('d-d3').innerHTML = 
+        statusIcon(typeof window.d3 !== 'undefined') + 
+        ` <code>${typeof window.d3}</code>` +
+        (window.d3 ? ` v${window.d3.version || 'unknown'}` : '');
+      
+      document.getElementById('d-markmap').innerHTML = 
+        statusIcon(typeof window.markmap !== 'undefined') + 
+        ` <code>${typeof window.markmap}</code>`;
+      
+      document.getElementById('d-markmap-view').innerHTML = 
+        statusIcon(window.markmap?.Markmap) + 
+        ` <code>${typeof window.markmap?.Markmap}</code>`;
+
+      const agsInstance = window.agsMarkmap;
+      document.getElementById('d-instance').innerHTML = 
+        statusIcon(agsInstance) + ` <code>${typeof agsInstance}</code>`;
+      
+      // Check initialization state
+      const isInitialized = agsInstance?.getState ? agsInstance.getState().isInitialized : false;
+      const state = agsInstance?.getState ? agsInstance.getState() : null;
+      
+      document.getElementById('d-initialized').innerHTML = 
+        statusIcon(isInitialized) + 
+        (isInitialized ? ' Initialized' : state?.isLoading ? ' Loading...' : ' Not initialized');
+      
+      // Get state information
+      const stateInfo = state ? 
+        `${state.headingCount} headings, depth: ${state.treeDepth}` : 
+        'No state available';
+      document.getElementById('d-tree-nodes').innerHTML = 
+        `<code>${stateInfo}</code>`;
+      
+      // Generate recommendations
+      generateRecommendations(container, svg, agsInstance, validHeadings.length);
+    } catch (error) {
+      console.error('[Debug Panel] Error updating:', error);
+    }
   };
 
   const generateRecommendations = (container, svg, agsInstance, headingCount) => {
     const recommendations = [];
     let severity = 'info'; // info, warning, error
+    
+    // Get state once at the beginning
+    const state = agsInstance?.getState ? agsInstance.getState() : null;
+    const isInitialized = state?.isInitialized || false;
     
     // Check critical dependencies
     if (typeof window.d3 === 'undefined') {
@@ -236,7 +256,7 @@
     }
     
     // Check initialization
-    if (agsInstance && !agsInstance.markmapView && headingCount > 0) {
+    if (agsInstance && !isInitialized && headingCount > 0 && !state?.isLoading) {
       recommendations.push({
         level: 'warning',
         title: '⚠️ Markmap not initialized despite having headings',
@@ -244,14 +264,15 @@
           'Check console logs for initialization errors',
           'Verify dependencies loaded before index.ts',
           'Check if DOMContentLoaded event fired',
-          'Look for JavaScript errors in browser console'
+          'Look for JavaScript errors in browser console',
+          state?.hasError ? `Error: ${state.errorMessage}` : 'Check state.hasError for details'
         ]
       });
       if (severity === 'info') severity = 'warning';
     }
     
     // Check SVG rendering
-    if (agsInstance?.markmapView && !svg) {
+    if (isInitialized && !svg) {
       recommendations.push({
         level: 'warning',
         title: '⚠️ Markmap initialized but no SVG rendered',
@@ -266,7 +287,9 @@
     }
     
     // Check config
-    const hasConfig = {{ if .Site.Params.hb.ags_markmap }}true{{ else }}false{{ end }};
+    const configStatusEl = document.getElementById('d-config-status');
+    const hasConfig = configStatusEl ? configStatusEl.getAttribute('data-has-config') === 'true' : false;
+    
     if (!hasConfig) {
       recommendations.push({
         level: 'warning',
@@ -284,7 +307,7 @@
     }
     
     // All good!
-    if (recommendations.length === 0 && svg && agsInstance?.markmapView) {
+    if (recommendations.length === 0 && svg && isInitialized) {
       recommendations.push({
         level: 'success',
         title: '✅ Everything working perfectly!',
@@ -292,7 +315,7 @@
           'Markmap is fully initialized and rendered',
           'All dependencies loaded correctly',
           'Module is properly configured',
-          `Found ${headingCount} headings and created tree successfully`
+          `Found ${headingCount} headings, tree depth: ${state?.treeDepth || 0}`
         ]
       });
       severity = 'success';
@@ -364,16 +387,27 @@
     }
   };
 
-  updateDebugInfo();
-  const interval = setInterval(updateDebugInfo, 1000);
-  
-  setTimeout(() => {
-    clearInterval(interval);
-    const logsEl = document.getElementById('d-logs');
-    if (logsEl) {
-      logsEl.innerHTML += '<div style="color: #569cd6; margin-top: 5px;">[Monitoring stopped after 30s]</div>';
-    }
-  }, 30000);
+  // Wait for DOM to be ready, then start monitoring
+  const initDebugPanel = () => {
+    console.log('[Debug Panel] Initializing...');
+    updateDebugInfo();
+    const interval = setInterval(updateDebugInfo, 1000);
+    
+    setTimeout(() => {
+      clearInterval(interval);
+      const logsEl = document.getElementById('d-logs');
+      if (logsEl) {
+        logsEl.innerHTML += '<div style="color: #569cd6; margin-top: 5px;">[Monitoring stopped after 30s]</div>';
+      }
+    }, 30000);
+  };
+
+  // Initialize immediately if DOM is ready, otherwise wait
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initDebugPanel);
+  } else {
+    initDebugPanel();
+  }
 
   // Keyboard shortcut: Ctrl+Shift+D
   document.addEventListener('keydown', (e) => {
