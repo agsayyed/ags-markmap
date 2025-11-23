@@ -1,0 +1,389 @@
+{{- $enableDebug := false -}}
+{{- if .Page.Params.ags_markmap -}}
+  {{- if .Page.Params.ags_markmap_debug -}}
+    {{- $enableDebug = true -}}
+  {{- else if eq hugo.Environment "development" -}}
+    {{- if .Site.Params.hb.ags_markmap.debug -}}
+      {{- $enableDebug = true -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- if $enableDebug -}}
+<!-- AGS Markmap Diagnostic Panel -->
+<div id="ags-markmap-diagnostic" style="
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  max-width: 400px;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  padding: 15px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 12px;
+  z-index: 10000;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  max-height: 80vh;
+  overflow-y: auto;
+">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    <strong style="color: #4ec9b0;">🔍 AGS Markmap Debug</strong>
+    <button onclick="this.parentElement.parentElement.remove()" style="
+      background: #d16969;
+      color: white;
+      border: none;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    ">✕</button>
+  </div>
+
+  <div id="debug-content">
+    <div style="margin-bottom: 10px;">
+      <div style="color: #9cdcfe;">Hugo Info:</div>
+      <div>• Environment: <span id="d-hugo-env">-</span></div>
+      <div>• Version: <code>{{ hugo.Version }}</code></div>
+      <div>• Module Path: <code style="font-size: 10px;">{{ with .Site.Data.modules }}{{ range . }}{{ if eq .Path "github.com/agsayyed/ags-markmap" }}{{ .Version }}{{ end }}{{ end }}{{ end }}</code></div>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+      <div style="color: #9cdcfe;">Page Info:</div>
+      <div>• Title: <code style="font-size: 10px;">{{ .Page.Title }}</code></div>
+      <div>• Param ags_markmap: <span id="d-param">{{ .Page.Params.ags_markmap }}</span></div>
+      <div>• Type: <code>{{ .Page.Type }}</code></div>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+      <div style="color: #9cdcfe;">DOM Elements:</div>
+      <div>• Container: <span id="d-container">-</span></div>
+      <div>• SVG Element: <span id="d-svg">-</span></div>
+      <div>• Headings Found: <span id="d-headings">-</span></div>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+      <div style="color: #9cdcfe;">Dependencies:</div>
+      <div>• D3.js: <span id="d-d3">-</span></div>
+      <div>• Markmap Lib: <span id="d-markmap">-</span></div>
+      <div>• Markmap View: <span id="d-markmap-view">-</span></div>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+      <div style="color: #9cdcfe;">AGS Markmap:</div>
+      <div>• Instance: <span id="d-instance">-</span></div>
+      <div>• Initialized: <span id="d-initialized">-</span></div>
+      <div>• Tree Nodes: <span id="d-tree-nodes">-</span></div>
+    </div>
+
+    <div style="margin-bottom: 10px;">
+      <div style="color: #9cdcfe;">Config:</div>
+      {{- if .Site.Params.hb.ags_markmap -}}
+        <div>• Enable: <code>{{ .Site.Params.hb.ags_markmap.enable }}</code></div>
+        <div>• Debug: <code>{{ .Site.Params.hb.ags_markmap.debug }}</code></div>
+      {{- else -}}
+        <div style="color: #d16969;">• No config found in params.hb.ags_markmap</div>
+      {{- end -}}
+    </div>
+
+    <div id="d-recommendations" style="margin-top: 10px; padding: 10px; background: #2d2d2d; border-radius: 4px;"></div>
+    <div id="d-errors" style="margin-top: 10px; color: #d16969;"></div>
+    <div id="d-logs" style="margin-top: 10px; max-height: 200px; overflow-y: auto; font-size: 10px;"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const statusIcon = (value) => value ? '<span style="color: #4ec9b0;">✓</span>' : '<span style="color: #d16969;">✗</span>';
+  
+  const updateDebugInfo = () => {
+    document.getElementById('d-hugo-env').innerHTML = 
+      `<code>${window.HUGO_ENVIRONMENT || 'undefined'}</code>`;
+
+    const container = document.getElementById('ags-markmap-container');
+    document.getElementById('d-container').innerHTML = 
+      statusIcon(container) + (container ? ` (${container.tagName})` : ' Missing');
+    
+    const svg = container ? container.querySelector('svg') : null;
+    document.getElementById('d-svg').innerHTML = 
+      statusIcon(svg) + (svg ? ` (${svg.children.length} children)` : '');
+
+    // Count headings on page
+    const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+    const validHeadings = Array.from(headings).filter(h => {
+      const parent = h.closest('.hb-docs-sidebar, .hb-docs-toc, nav, .navbar, .breadcrumb');
+      return !parent;
+    });
+    document.getElementById('d-headings').innerHTML = 
+      statusIcon(validHeadings.length > 0) + 
+      ` <code>${validHeadings.length} (${headings.length} total)</code>`;
+
+    document.getElementById('d-d3').innerHTML = 
+      statusIcon(typeof window.d3 !== 'undefined') + 
+      ` <code>${typeof window.d3}</code>` +
+      (window.d3 ? ` v${window.d3.version || 'unknown'}` : '');
+    
+    document.getElementById('d-markmap').innerHTML = 
+      statusIcon(typeof window.markmap !== 'undefined') + 
+      ` <code>${typeof window.markmap}</code>`;
+    
+    document.getElementById('d-markmap-view').innerHTML = 
+      statusIcon(window.markmap?.Markmap) + 
+      ` <code>${typeof window.markmap?.Markmap}</code>`;
+
+    const agsInstance = window.agsMarkmap;
+    document.getElementById('d-instance').innerHTML = 
+      statusIcon(agsInstance) + ` <code>${typeof agsInstance}</code>`;
+    
+    document.getElementById('d-initialized').innerHTML = 
+      statusIcon(agsInstance?.markmapView) + 
+      (agsInstance?.markmapView ? ' View created' : ' Not initialized');
+    
+    // Get tree node count from the markmap data
+    const treeNodes = agsInstance?.root ? countNodes(agsInstance.root) : 0;
+    document.getElementById('d-tree-nodes').innerHTML = 
+      `<code>${treeNodes} nodes</code>`;
+    
+    // Generate recommendations
+    generateRecommendations(container, svg, agsInstance, validHeadings.length);
+  };
+
+  const countNodes = (node) => {
+    if (!node) return 0;
+    let count = 1;
+    if (node.children && Array.isArray(node.children)) {
+      count += node.children.reduce((sum, child) => sum + countNodes(child), 0);
+    }
+    return count;
+  };
+
+  const generateRecommendations = (container, svg, agsInstance, headingCount) => {
+    const recommendations = [];
+    let severity = 'info'; // info, warning, error
+    
+    // Check critical dependencies
+    if (typeof window.d3 === 'undefined') {
+      recommendations.push({
+        level: 'error',
+        title: '❌ D3.js not loaded',
+        actions: [
+          'Check if CDN scripts are being blocked by firewall/proxy',
+          'Verify internet connectivity',
+          'Check browser console for network errors',
+          'Try using a different CDN or local copy'
+        ]
+      });
+      severity = 'error';
+    }
+    
+    if (typeof window.markmap === 'undefined') {
+      recommendations.push({
+        level: 'error',
+        title: '❌ Markmap library not loaded',
+        actions: [
+          'Check if unpkg.com CDN is accessible',
+          'Verify markmap-view script tag in body-begin.html',
+          'Check browser Network tab for failed requests',
+          'Ensure version 0.15.8 is specified correctly'
+        ]
+      });
+      severity = 'error';
+    }
+    
+    // Check container
+    if (!container) {
+      recommendations.push({
+        level: 'error',
+        title: '❌ Container element missing',
+        actions: [
+          'Verify body-begin.html hook is being loaded',
+          'Check if Hugo module is properly imported (run: hugo mod graph)',
+          'Ensure module mounts are correct in go.mod',
+          'Check if ags_markmap: true is in page front matter'
+        ]
+      });
+      severity = 'error';
+    }
+    
+    // Check headings
+    if (headingCount === 0 && container) {
+      recommendations.push({
+        level: 'warning',
+        title: '⚠️ No headings found on page',
+        actions: [
+          'Ensure page content has headings (# ## ### in markdown)',
+          'Check if headings are being filtered out by navigation/sidebar',
+          'Verify content is being rendered in the DOM',
+          'Markmap needs at least one heading to render'
+        ]
+      });
+      if (severity === 'info') severity = 'warning';
+    }
+    
+    // Check AGS Markmap instance
+    if (!agsInstance && container && typeof window.d3 !== 'undefined') {
+      recommendations.push({
+        level: 'error',
+        title: '❌ AGS Markmap instance not created',
+        actions: [
+          'Check if TypeScript module is being compiled (check browser console)',
+          'Verify Hugo asset pipeline: resources.Get "hb/modules/agsayyed/js/index.ts"',
+          'Run: hugo mod clean && hugo mod get -u',
+          'Check if js.Build is processing TypeScript correctly',
+          'Look for TypeScript compilation errors in Hugo output'
+        ]
+      });
+      severity = 'error';
+    }
+    
+    // Check initialization
+    if (agsInstance && !agsInstance.markmapView && headingCount > 0) {
+      recommendations.push({
+        level: 'warning',
+        title: '⚠️ Markmap not initialized despite having headings',
+        actions: [
+          'Check console logs for initialization errors',
+          'Verify dependencies loaded before index.ts',
+          'Check if DOMContentLoaded event fired',
+          'Look for JavaScript errors in browser console'
+        ]
+      });
+      if (severity === 'info') severity = 'warning';
+    }
+    
+    // Check SVG rendering
+    if (agsInstance?.markmapView && !svg) {
+      recommendations.push({
+        level: 'warning',
+        title: '⚠️ Markmap initialized but no SVG rendered',
+        actions: [
+          'Check if container has proper dimensions (width/height)',
+          'Verify CSS is not hiding the SVG',
+          'Check browser console for rendering errors',
+          'Inspect container element in DevTools'
+        ]
+      });
+      if (severity === 'info') severity = 'warning';
+    }
+    
+    // Check config
+    const hasConfig = {{ if .Site.Params.hb.ags_markmap }}true{{ else }}false{{ end }};
+    if (!hasConfig) {
+      recommendations.push({
+        level: 'warning',
+        title: '⚠️ Module config not found',
+        actions: [
+          'Add to config/_default/params.yaml:',
+          '  hb:',
+          '    ags_markmap:',
+          '      enable: true',
+          '      debug: true  # for development',
+          'Or check if config file is in correct location'
+        ]
+      });
+      if (severity === 'info') severity = 'warning';
+    }
+    
+    // All good!
+    if (recommendations.length === 0 && svg && agsInstance?.markmapView) {
+      recommendations.push({
+        level: 'success',
+        title: '✅ Everything working perfectly!',
+        actions: [
+          'Markmap is fully initialized and rendered',
+          'All dependencies loaded correctly',
+          'Module is properly configured',
+          `Found ${headingCount} headings and created tree successfully`
+        ]
+      });
+      severity = 'success';
+    }
+    
+    // Display recommendations
+    const recEl = document.getElementById('d-recommendations');
+    if (recEl) {
+      const colors = {
+        error: '#d16969',
+        warning: '#dcdcaa',
+        info: '#569cd6',
+        success: '#4ec9b0'
+      };
+      
+      let html = `<div style="color: #9cdcfe; margin-bottom: 8px; font-weight: bold;">📋 Diagnostic Report:</div>`;
+      
+      recommendations.forEach(rec => {
+        html += `<div style="margin-bottom: 12px; padding: 8px; background: #1e1e1e; border-left: 3px solid ${colors[rec.level]}; border-radius: 3px;">`;
+        html += `<div style="color: ${colors[rec.level]}; font-weight: bold; margin-bottom: 4px;">${rec.title}</div>`;
+        html += `<div style="font-size: 11px; margin-left: 8px;">`;
+        rec.actions.forEach((action, idx) => {
+          html += `<div style="margin: 3px 0;">${idx + 1}. ${action}</div>`;
+        });
+        html += `</div></div>`;
+      });
+      
+      recEl.innerHTML = html;
+    }
+  };
+
+  const logs = [];
+  const originalLog = console.log;
+  const originalError = console.error;
+  const originalWarn = console.warn;
+  
+  const logCapture = (...args) => {
+    const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+    if (msg.toLowerCase().includes('markmap') || msg.toLowerCase().includes('ags')) {
+      logs.push(`[LOG] ${new Date().toISOString().substr(11, 8)} ${msg}`);
+      updateLogs();
+    }
+  };
+  
+  const errorCapture = (...args) => {
+    const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+    logs.push(`<span style="color: #d16969;">[ERROR] ${new Date().toISOString().substr(11, 8)} ${msg}</span>`);
+    updateLogs();
+    originalError.apply(console, args);
+  };
+  
+  const warnCapture = (...args) => {
+    const msg = args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' ');
+    logs.push(`<span style="color: #dcdcaa;">[WARN] ${new Date().toISOString().substr(11, 8)} ${msg}</span>`);
+    updateLogs();
+    originalWarn.apply(console, args);
+  };
+  
+  console.log = function(...args) { logCapture(...args); originalLog.apply(console, args); };
+  console.error = errorCapture;
+  console.warn = warnCapture;
+  
+  const updateLogs = () => {
+    const logsEl = document.getElementById('d-logs');
+    if (logsEl && logs.length > 0) {
+      logsEl.innerHTML = '<div style="color: #9cdcfe; margin-bottom: 5px;">Console Logs:</div>' + 
+        logs.slice(-15).map(l => `<div style="margin: 2px 0;">${l}</div>`).join('');
+      logsEl.scrollTop = logsEl.scrollHeight;
+    }
+  };
+
+  updateDebugInfo();
+  const interval = setInterval(updateDebugInfo, 1000);
+  
+  setTimeout(() => {
+    clearInterval(interval);
+    const logsEl = document.getElementById('d-logs');
+    if (logsEl) {
+      logsEl.innerHTML += '<div style="color: #569cd6; margin-top: 5px;">[Monitoring stopped after 30s]</div>';
+    }
+  }, 30000);
+
+  // Keyboard shortcut: Ctrl+Shift+D
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+      const panel = document.getElementById('ags-markmap-diagnostic');
+      if (panel) {
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+      }
+    }
+  });
+})();
+</script>
+{{- end -}}
