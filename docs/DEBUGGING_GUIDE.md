@@ -3,11 +3,13 @@
 ## What Was Added
 
 ### 1. Diagnostic Panel
+
 A comprehensive debug panel that appears on pages with `ags_markmap_debug: true` enabled.
 
 **Location**: `layouts/partials/hugopress/modules/ags-markmap/debug/diagnostic-panel.html`
 
 ### 2. Integration
+
 The diagnostic panel is automatically included via the `body-begin.html` hook.
 
 **Modified**: `layouts/partials/hugopress/modules/ags-markmap/hooks/body-begin.html`
@@ -15,6 +17,7 @@ The diagnostic panel is automatically included via the `body-begin.html` hook.
 ## How It Works in Development Project
 
 Currently working in your development environment because:
+
 - ✅ Module is local (mounted directly)
 - ✅ TypeScript compilation works
 - ✅ All dependencies load correctly
@@ -36,6 +39,7 @@ When you push this to GitHub and import it in another project, the debug panel w
 ### 📋 Provide Actionable Solutions
 
 For each issue detected, the panel shows:
+
 - ❌ Error level (critical, must fix)
 - ⚠️ Warning level (should fix)
 - ✅ Success (all working)
@@ -45,9 +49,10 @@ Plus step-by-step instructions to resolve each issue.
 ## Current Debug Output Analysis
 
 Your current output shows:
+
 ```
 • Container: ✓ (DIV)              <- Working
-• SVG Element: ✓ (2 children)     <- Working  
+• SVG Element: ✓ (2 children)     <- Working
 • D3.js: ✓ object v7.9.0          <- Working
 • Markmap Lib: ✓ object           <- Working
 • Markmap View: ✓ function        <- Working
@@ -58,17 +63,20 @@ Your current output shows:
 ### Why "Not Initialized"?
 
 Looking at your logs, you see:
+
 ```
 [LOG] --- ags-markmap: AGS Markmap initialized successfully ---
 ```
 
-But the panel shows "Not initialized" because it's checking `agsInstance.markmapView` which might not be set yet or might be named differently in your implementation.
+But the panel shows "Not initialized" because it's checking `agsInstance.markmapView` which might not be set yet or might be named
+differently in your implementation.
 
 ### Fix the Check
 
-The diagnostic panel looks for `window.agsMarkmap.markmapView`. 
+The diagnostic panel looks for `window.agsMarkmap.markmapView`.
 
 Check your `agsMarkmap.ts` implementation:
+
 - Does it set `this.markmapView` property?
 - Or is it named something else?
 
@@ -77,7 +85,9 @@ The panel will guide users to check this in the consuming project.
 ## Benefits for Consuming Projects
 
 ### Before (Without Debug Panel)
+
 User sees blank page and has to:
+
 1. Open browser inspector
 2. Check console (might not have debug logs in production)
 3. Manually verify each dependency
@@ -85,7 +95,9 @@ User sees blank page and has to:
 5. Search documentation
 
 ### After (With Debug Panel)
+
 User sees:
+
 1. Clear visual panel with all status checks
 2. Specific error identification
 3. Step-by-step solutions
@@ -95,6 +107,7 @@ User sees:
 ## Typical Consuming Project Issues
 
 ### Issue 1: Module Not Imported
+
 ```
 ❌ Container element missing
 
@@ -106,6 +119,7 @@ Actions:
 ```
 
 ### Issue 2: TypeScript Not Compiling
+
 ```
 ❌ AGS Markmap instance not created
 
@@ -118,6 +132,7 @@ Actions:
 ```
 
 ### Issue 3: CDN Blocked
+
 ```
 ❌ D3.js not loaded
 
@@ -142,6 +157,7 @@ Actions:
 ## Next Steps
 
 ### 1. Commit Changes
+
 ```bash
 cd /home/ag-sayyed/Documents/projects/hugo/modules/ags-modules/ags-module-workspace/modules/ags-markmap
 git add layouts/partials/hugopress/modules/ags-markmap/debug/
@@ -159,14 +175,17 @@ git commit -m "feat: Add comprehensive diagnostic panel for debugging
 ```
 
 ### 2. Push to GitHub
+
 ```bash
 git push origin feat/adding-debug-module
 ```
 
 ### 3. Create Pull Request / Merge
+
 Merge the feature branch to main when ready.
 
 ### 4. Update in Consuming Project
+
 ```bash
 # In your consuming project
 hugo mod get -u github.com/agsayyed/ags-markmap
@@ -176,6 +195,7 @@ hugo mod tidy
 ### 5. Enable Debug in Consuming Project
 
 Add to `config/development/params.yaml`:
+
 ```yaml
 hb:
   ags_markmap:
@@ -186,6 +206,7 @@ hb:
 ### 6. Test Page
 
 Navigate to a page with:
+
 ```yaml
 ---
 ags_markmap: true
@@ -197,22 +218,29 @@ You should see the debug panel appear automatically!
 ## FAQ
 
 ### Q: Will this slow down my site?
+
 A: No! The panel only loads when:
+
 - `debug: true` in config (development only)
 - OR `ags_markmap_debug: true` in page front matter
 
 ### Q: Can I use this in production?
+
 A: Not recommended. Set `debug: false` or remove the config in production.
 
 ### Q: How do I share debug info with others?
+
 A: Take a screenshot of the diagnostic panel - it contains all relevant info.
 
 ### Q: What if the panel itself doesn't appear?
+
 A: That means the module isn't loading at all. Check:
+
 1. `hugo mod graph` shows the module
 2. Front matter has `ags_markmap: true`
 3. Hugo version is compatible
 
 ## Conclusion
 
-This diagnostic panel transforms debugging from a frustrating guessing game into a guided troubleshooting experience. Users in consuming projects will immediately know what's wrong and how to fix it.
+This diagnostic panel transforms debugging from a frustrating guessing game into a guided troubleshooting experience. Users in consuming
+projects will immediately know what's wrong and how to fix it.

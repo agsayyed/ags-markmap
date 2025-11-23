@@ -85,27 +85,18 @@
   - tags: [linking, navigation, external, feature]
   - priority: high
   - workload: Normal
-  - steps:
-    - [ ] Extend NodeFactory to support LinkNode type
-    - [ ] Update ContentParser to detect external links
-    - [ ] Implement LinkNodeFactory with URL validation
-    - [ ] Add visual indicators for external vs internal nodes
-    - [ ] Implement click handling for external navigation
-    - [ ] Add comprehensive error handling for invalid URLs
+  - steps: - [ ] Extend NodeFactory to support LinkNode type - [ ] Update ContentParser to detect external links - [ ] Implement
+    LinkNodeFactory with URL validation - [ ] Add visual indicators for external vs internal nodes - [ ] Implement click handling for
+    external navigation - [ ] Add comprehensive error handling for invalid URLs
 
     ```md
-    Add support for external links in mindmap nodes to enable navigation to other pages/sites.
-
-    Acceptance Criteria:
+    Add support for external links in mindmap nodes to enable navigation to other pages/sites. Acceptance Criteria:
 
     - Parse and detect external links in content
     - Render clickable nodes with external link indicators
     - Open external links in new tab/window
     - Visual distinction for external vs internal nodes
-    - URL validation and error handling
-
-    Architecture Ready:
-
+    - URL validation and error handling Architecture Ready:
     - Factory Pattern enables easy LinkNode addition
     - Strategy Pattern allows new parsing strategies
     - Adapter Pattern isolates external navigation logic
@@ -117,12 +108,8 @@
   - priority: critical
   - workload: Hard
   - defaultExpanded: true
-  - steps:
-    - [x] Research design patterns suitable for TypeScript modules
-    - [x] Create UML Component Diagram
-    - [x] Design class hierarchy and interfaces
-    - [x] Document pattern implementation strategy
-    - [x] Review and validate architecture design
+  - steps: - [x] Research design patterns suitable for TypeScript modules - [x] Create UML Component Diagram - [x] Design class hierarchy
+    and interfaces - [x] Document pattern implementation strategy - [x] Review and validate architecture design
 
     ```md
     ✅ Successfully created and implemented comprehensive architectural design with modern design patterns!
@@ -150,13 +137,8 @@
   - tags: [refactoring, typescript, module-pattern, core]
   - priority: critical
   - workload: Extreme
-  - steps:
-    - [ ] Set up TypeScript build configuration
-    - [ ] Define core interfaces and types
-    - [ ] Create modular component structure
-    - [ ] Implement dependency injection patterns
-    - [ ] Add comprehensive error handling
-    - [ ] Update Hugo template integration
+  - steps: - [ ] Set up TypeScript build configuration - [ ] Define core interfaces and types - [ ] Create modular component structure - [ ]
+    Implement dependency injection patterns - [ ] Add comprehensive error handling - [ ] Update Hugo template integration
 
     ```md
     Restructure current inline script code into proper TypeScript module with design patterns.
@@ -176,13 +158,8 @@
   - tags: [factory-pattern, nodes, typescript, architecture]
   - priority: high
   - workload: Normal
-  - steps:
-    - [ ] Design BaseNode interface
-    - [ ] Create HeadingNodeFactory
-    - [ ] Create TableNodeFactory (preparation)
-    - [ ] Create LinkNodeFactory (preparation)
-    - [ ] Implement NodeFactory orchestrator
-    - [ ] Add unit tests for factories
+  - steps: - [ ] Design BaseNode interface - [ ] Create HeadingNodeFactory - [ ] Create TableNodeFactory (preparation) - [ ] Create
+    LinkNodeFactory (preparation) - [ ] Implement NodeFactory orchestrator - [ ] Add unit tests for factories
 
     ```md
     Create factory classes for different types of mindmap nodes to support extensibility.
@@ -204,13 +181,8 @@
   - tags: [factory-pattern, nodes, typescript, architecture]
   - priority: high
   - workload: Normal
-  - steps:
-    - [x] Design BaseNode interface
-    - [x] Create HeadingNodeFactory
-    - [ ] Create TableNodeFactory (preparation)
-    - [ ] Create LinkNodeFactory (preparation)
-    - [x] Implement NodeFactory orchestrator
-    - [ ] Add unit tests for factories
+  - steps: - [x] Design BaseNode interface - [x] Create HeadingNodeFactory - [ ] Create TableNodeFactory (preparation) - [ ] Create
+    LinkNodeFactory (preparation) - [x] Implement NodeFactory orchestrator - [ ] Add unit tests for factories
 
     ```md
     🚧 In Progress: Factory pattern base implementation completed, extending for new node types.
@@ -236,13 +208,8 @@
   - tags: [refactoring, typescript, module-pattern, core, completed]
   - priority: critical
   - workload: Extreme
-  - steps:
-    - [x] Set up TypeScript build configuration
-    - [x] Define core interfaces and types
-    - [x] Create modular component structure
-    - [x] Implement dependency injection patterns
-    - [x] Add comprehensive error handling
-    - [x] Update Hugo template integration
+  - steps: - [x] Set up TypeScript build configuration - [x] Define core interfaces and types - [x] Create modular component structure - [x]
+    Implement dependency injection patterns - [x] Add comprehensive error handling - [x] Update Hugo template integration
 
     ```md
     ✅ MAJOR MILESTONE: Successfully refactored 288-line inline script into modular TypeScript architecture!
@@ -281,13 +248,9 @@
   - priority: high
   - workload: Normal
   - defaultExpanded: true
-  - steps:
-    - [x] Analyze current module dependencies
-    - [x] Identify core components and relationships
-    - [x] Create component diagram with Mermaid C4
-    - [x] Document component interfaces and responsibilities
-    - [x] Validate diagram syntax and preview
-    - [ ] Review architecture design with stakeholders
+  - steps: - [x] Analyze current module dependencies - [x] Identify core components and relationships - [x] Create component diagram with
+    Mermaid C4 - [x] Document component interfaces and responsibilities - [x] Validate diagram syntax and preview - [ ] Review architecture
+    design with stakeholders
 
     ```md
     ✅ Successfully created UML Component Diagram showing module architecture and dependencies.
@@ -313,6 +276,74 @@
     ```
 
 ## Done
+
+- Story: Implement Comprehensive Diagnostic Panel for Debugging
+  - completed: 2025-11-23
+  - tags: [debugging, diagnostic, troubleshooting, developer-experience, completed]
+  - priority: high
+  - workload: Normal
+  - defaultExpanded: true
+  - steps: - [x] Design diagnostic panel UI and information architecture - [x] Implement real-time status monitoring for all components -
+    [x] Add Hugo environment and version detection - [x] Create dependency checking (D3.js, Markmap library) - [x] Implement AGS Markmap
+    state monitoring via getState() - [x] Add DOM element validation (container, SVG, headings) - [x] Build actionable recommendation system
+    with severity levels - [x] Implement console log capture for relevant messages - [x] Add site configuration detection using Hugo index
+    function - [x] Create keyboard shortcut (Ctrl+Shift+D) for panel toggle - [x] Write comprehensive user documentation (README.md) - [x]
+    Fix variable scope issues and JavaScript errors - [x] Test in development environment
+
+    ```md
+    ✅ Successfully implemented comprehensive diagnostic panel for troubleshooting module issues in consuming projects!
+
+    Major Features Implemented:
+
+    - Real-time monitoring of all module components and dependencies
+    - Visual status indicators (✓/✗) for quick issue identification
+    - Actionable diagnostic reports with step-by-step solutions
+    - Color-coded severity levels (Error, Warning, Success)
+    - Console log capture for markmap-related messages (30-second window)
+    - Site and page configuration detection
+    - Heading extraction and tree structure validation
+    - State information display (heading count, tree depth, initialization status)
+
+    Technical Achievements:
+
+    - Proper Hugo template integration using index function for param access
+    - JavaScript state management without scope conflicts
+    - DOM-ready initialization with error handling
+    - Data attribute pattern for server-to-client communication
+    - Keyboard shortcut implementation (Ctrl+Shift+D)
+    - Positioned outside page param check for global availability
+
+    Configuration Options:
+
+    - Site-level: hb.ags_markmap.debug: true (development environment)
+    - Page-level: ags_markmap_debug: true (per-page override)
+    - Auto-hide in production when debug: false
+
+    Documentation Delivered:
+
+    - User-facing README.md in debug/ folder
+    - Common issues and solutions guide
+    - Configuration examples and best practices
+    - Troubleshooting workflow documentation
+    - Performance impact notes
+
+    Developer Experience Impact:
+
+    - Reduces debugging time from hours to minutes
+    - Self-service troubleshooting for end-users
+    - Clear visibility into module state and dependencies
+    - Eliminates guesswork with targeted recommendations
+    - Captures relevant logs automatically
+
+    Files Added:
+
+    - layouts/partials/hugopress/modules/ags-markmap/debug/diagnostic-panel.html
+    - layouts/partials/hugopress/modules/ags-markmap/debug/README.md
+
+    Files Modified:
+
+    - layouts/partials/hugopress/modules/ags-markmap/hooks/body-begin.html
+    ```
 
 - Story: Sprint 1 - TypeScript Refactoring & Architecture v0.2.0
   - completed: 2025-07-06
