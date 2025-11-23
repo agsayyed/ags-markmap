@@ -1,3 +1,16 @@
+[module]
+[module.hugoVersion]
+extended = true
+min = "0.110.0"
+
+[[module.mounts]]
+source = "layouts"
+target = "layouts"
+
+[[module.mounts]]
+source = "assets/hb/modules/ags-markmap"
+target = "assets/hb/modules/ags-markmap"
+
 [params.hb.ags_markmap]
 enable = true
 placement = "top"

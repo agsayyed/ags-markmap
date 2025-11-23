@@ -7,6 +7,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.3.1] - 2025-11-23
+
+### Fixed
+
+- Asset mounting conflict with other AGS modules
+- JavaScript assets now correctly mounted to `hb/modules/ags-markmap/js/` instead of `hb/modules/agsayyed/js/`
+- Added missing `[module]` configuration in config.toml
+- Removed conflicting asset path that caused overwrites when used with ags-mcq
+
+### Changed
+
+- Asset path in body-begin.html: `hb/modules/agsayyed/js/index.ts` → `hb/modules/ags-markmap/js/index.ts`
+- Diagnostic panel reference updated to match new asset path
+- Module now properly defines mounts in config.toml for standalone usage
+
+### Added
+
+- Module mounts configuration for layouts and assets
+- Documentation of asset mounting standards in MODULE_ASSET_STANDARDS.md
+
 ## [0.3.0] - 2025-11-23
 
 ### Added
@@ -118,7 +138,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Configurable height, autoFit, duration
 - Compatible with Hugo >= 0.110.0
 
-[Unreleased]: https://github.com/agsayyed/ags-markmap/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/agsayyed/ags-markmap/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/agsayyed/ags-markmap/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/agsayyed/ags-markmap/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/agsayyed/ags-markmap/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/agsayyed/ags-markmap/compare/v0.1.1...v0.1.2

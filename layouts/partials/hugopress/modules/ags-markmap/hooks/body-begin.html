@@ -28,7 +28,7 @@
 </script>
 
 {{- /* Load TypeScript module via Hugo's asset pipeline */ -}}
-{{- $js := resources.Get "hb/modules/agsayyed/js/index.ts" | js.Build -}}
+{{- $js := resources.Get "hb/modules/ags-markmap/js/index.ts" | js.Build -}}
 <script src="{{ $js.RelPermalink }}"></script>
 
 {{- end -}}
