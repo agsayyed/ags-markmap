@@ -7,6 +7,43 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.3.0] - 2025-11-23
+
+### Added
+
+- Comprehensive diagnostic panel for debugging module issues
+- Real-time status monitoring for all module components and dependencies
+- Visual status indicators (✓/✗) for quick issue identification
+- Actionable diagnostic reports with step-by-step troubleshooting solutions
+- Color-coded severity levels (Error, Warning, Success) for recommendations
+- Console log capture for markmap-related messages (30-second window)
+- Site and page configuration detection and display
+- Heading extraction and tree structure validation
+- State information display (heading count, tree depth, initialization status)
+- Keyboard shortcut (Ctrl+Shift+D) for toggling diagnostic panel
+- User-facing documentation (debug/README.md)
+- Developer documentation (docs/DEBUGGING_GUIDE.md)
+
+### Changed
+
+- Diagnostic panel positioned globally for availability across all pages
+- Hugo template integration using index function for proper param access
+- JavaScript state management improved to avoid scope conflicts
+
+### Fixed
+
+- Variable scope issues in diagnostic panel JavaScript
+- Hugo template parameter access for keys with underscores
+- Configuration detection now properly reads hb.ags_markmap settings
+- AGS Markmap state checking now uses getState().isInitialized
+
+### Improved
+
+- Developer experience with self-service troubleshooting capabilities
+- Debugging time reduced from hours to minutes
+- Clear visibility into module state and dependencies
+- Eliminates guesswork with targeted recommendations
+
 ## [0.2.0] - 2025-07-06
 
 ### Added
@@ -81,6 +118,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Configurable height, autoFit, duration
 - Compatible with Hugo >= 0.110.0
 
-[Unreleased]: https://github.com/agsayyed/ags-markmap/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/agsayyed/ags-markmap/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/agsayyed/ags-markmap/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/agsayyed/ags-markmap/compare/v0.1.2...v0.2.0
+[0.1.2]: https://github.com/agsayyed/ags-markmap/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/agsayyed/ags-markmap/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/agsayyed/ags-markmap/releases/tag/v0.1.0
