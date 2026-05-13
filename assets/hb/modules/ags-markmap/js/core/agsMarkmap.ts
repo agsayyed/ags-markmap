@@ -47,15 +47,17 @@ export class AGSMarkmap {
         throw new Error(`Container with ID '${this.config.containerId}' not found`);
       }
 
-      // Extract content and build tree
-      const headings = this.parser.extractHeadings();
-      this.state.headingCount = headings.length;
+      // Extract content elements (headings + list items) and build tree
+      const elements = this.parser.extractContentElements();
+      this.state.headingCount = elements.filter((e) => e.type === 'heading').length;
 
-      if (headings.length === 0) {
-        log.warn('No headings found on page');
+      if (elements.length === 0) {
+        log.warn('No content elements found on page');
       }
 
-      const tree = this.treeBuilder.buildTree(headings);
+      log.debug(`Found ${elements.length} total elements (${this.state.headingCount} headings, ${elements.length - this.state.headingCount} list items)`);
+
+      const tree = this.treeBuilder.buildTreeFromElements(elements);
       this.state.treeDepth = this.calculateTreeDepth(tree);
 
       // Render the mindmap

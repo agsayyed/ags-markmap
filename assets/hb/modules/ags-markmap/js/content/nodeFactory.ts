@@ -1,4 +1,4 @@
-import { MarkmapNode, HeadingElement, TableData, LinkData } from '../types/markmap.types';
+import { MarkmapNode, HeadingElement, TableData, LinkData, ContentElement } from '../types/markmap.types';
 import log from '../utils/logger';
 
 export class NodeFactory {
@@ -8,7 +8,36 @@ export class NodeFactory {
       children: [],
       payload: {
         level: heading.level,
-        index: index
+        index: index,
+        nodeType: 'heading'
+      }
+    };
+  }
+
+  public createContentNode(element: ContentElement, index: number): MarkmapNode {
+    if (element.type === 'list-item') {
+      return this.createListItemNode(element, index);
+    }
+    return {
+      content: element.text,
+      children: [],
+      payload: {
+        level: element.level,
+        index: index,
+        nodeType: 'heading'
+      }
+    };
+  }
+
+  public createListItemNode(element: ContentElement, index: number): MarkmapNode {
+    return {
+      content: element.text,
+      children: [],
+      payload: {
+        level: element.level + 1,
+        index: index,
+        nodeType: 'list-item',
+        href: element.href
       }
     };
   }
@@ -19,7 +48,8 @@ export class NodeFactory {
       children: [],
       payload: {
         level: 0,
-        index: -1
+        index: -1,
+        nodeType: 'heading'
       }
     };
   }
@@ -30,15 +60,14 @@ export class NodeFactory {
       children: [],
       payload: {
         level: 1,
-        index: 0
+        index: 0,
+        nodeType: 'heading'
       }
     };
   }
 }
 
-// Factory methods for future node types (extensibility)
 export class TableNodeFactory extends NodeFactory {
-  // Future implementation for table nodes
   public createTableNode(_tableData: TableData): MarkmapNode {
     log.debug('Table node creation not yet implemented');
     return this.createEmptyNode('Table node (coming soon)');
@@ -46,7 +75,6 @@ export class TableNodeFactory extends NodeFactory {
 }
 
 export class LinkNodeFactory extends NodeFactory {
-  // Future implementation for link nodes
   public createLinkNode(_linkData: LinkData): MarkmapNode {
     log.debug('Link node creation not yet implemented');
     return this.createEmptyNode('Link node (coming soon)');

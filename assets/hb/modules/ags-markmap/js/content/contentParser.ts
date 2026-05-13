@@ -1,4 +1,4 @@
-import { HeadingElement } from '../types/markmap.types';
+import { HeadingElement, ContentElement } from '../types/markmap.types';
 import log from '../utils/logger';
 
 export class ContentParser {
@@ -14,8 +14,88 @@ export class ContentParser {
     return headings;
   }
 
+  public extractContentElements(): ContentElement[] {
+    log.debug('Starting content element extraction (headings + lists)');
+
+    const container = this.getContentContainer();
+    if (!container) {
+      log.warn('No content container found, falling back to heading-only extraction');
+      return this.extractHeadings().map((h) => ({
+        type: 'heading' as const,
+        level: h.level,
+        text: h.text,
+        element: h.element
+      }));
+    }
+
+    const elements: ContentElement[] = [];
+    let currentHeadingLevel = 1;
+
+    // Walk direct and nested children to capture headings and lists in DOM order
+    const walk = (node: Element): void => {
+      const tag = node.tagName?.toLowerCase();
+
+      if (/^h[1-6]$/.test(tag)) {
+        const el = node as HTMLElement;
+        if (this.isValidHeading(el)) {
+          const text = this.cleanHeadingText(el.textContent || '');
+          if (text.length > 0) {
+            currentHeadingLevel = parseInt(tag.charAt(1));
+            elements.push({ type: 'heading', level: currentHeadingLevel, text, element: el });
+          }
+        }
+      } else if (tag === 'ul' || tag === 'ol') {
+        const ordered = tag === 'ol';
+        Array.from(node.querySelectorAll(':scope > li')).forEach((li) => {
+          const { text, href } = this.extractListItemContent(li as HTMLElement);
+          if (text.length > 0) {
+            elements.push({
+              type: 'list-item',
+              level: currentHeadingLevel,
+              text,
+              href,
+              ordered,
+              element: li as HTMLElement
+            });
+          }
+        });
+      } else {
+        // Recurse into generic containers (div, section, article, etc.)
+        Array.from(node.children).forEach(walk);
+      }
+    };
+
+    Array.from(container.children).forEach(walk);
+
+    log.debug(`Extracted ${elements.length} content elements (headings + list items)`);
+    return elements;
+  }
+
+  private getContentContainer(): Element | null {
+    const selectors = [
+      '.hb-docs-doc-content', '.hb-docs-content', '.docs-content',
+      '.hb-landing-content', '.landing-content', '.page-content',
+      '.content', 'main .container', 'main', 'article'
+    ];
+    for (const sel of selectors) {
+      const el = document.querySelector(sel);
+      if (el) return el;
+    }
+    return null;
+  }
+
+  private extractListItemContent(li: HTMLElement): { text: string; href?: string } {
+    const anchor = li.querySelector('a');
+    if (anchor) {
+      return {
+        text: this.cleanHeadingText(anchor.textContent || ''),
+        href: anchor.getAttribute('href') || undefined
+      };
+    }
+    return { text: this.cleanHeadingText(li.textContent || '') };
+  }
+
   private isValidHeading(element: HTMLElement): boolean {
-    // Filter out navigation and system headings
     const parent = element.closest('.hb-docs-sidebar, .hb-docs-toc, nav, .navbar, .breadcrumb');
     const textContent = element.textContent?.trim();
     return !parent && Boolean(textContent && textContent.length > 0);
@@ -24,24 +104,17 @@ export class ContentParser {
   private createHeadingElement(element: HTMLElement): HeadingElement {
     const text = this.cleanHeadingText(element.textContent || element.innerText || '');
     const level = parseInt(element.tagName.charAt(1));
-
-    return {
-      level,
-      text,
-      element
-    };
+    return { level, text, element };
   }
 
   private cleanHeadingText(text: string): string {
-    // Remove common anchor link symbols and decorations
-    text = text.replace(/[§¶#↵⌘∞†‡★☆♦♠♣♥←→↑↓]/g, ''); // Various symbols
-    text = text.replace(/[\u00A0-\u00FF\u2000-\u206F\u2E00-\u2E7F]/g, ' '); // Unicode symbols and spaces
-    text = text.replace(/\s+/g, ' '); // Normalize whitespace
+    text = text.replace(/[§¶#↵⌘∞†‡★☆♦♠♣♥←→↑↓]/g, '');
+    text = text.replace(/[\u00A0-\u00FF\u2000-\u206F\u2E00-\u2E7F]/g, ' ');
+    text = text.replace(/\s+/g, ' ');
     return text.trim();
   }
 
   public getPageTitle(): string {
-    // Extract clean page title (remove site branding)
     const fullTitle = document.title || 'Page Content';
     return fullTitle.split(' - ')[0] || fullTitle.split(' | ')[0] || fullTitle;
   }

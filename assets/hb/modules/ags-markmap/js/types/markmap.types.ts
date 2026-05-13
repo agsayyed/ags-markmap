@@ -8,18 +8,31 @@ export interface MarkmapOptions {
   [key: string]: any;
 }
 
+export type NodeType = 'heading' | 'list-item';
+
 export interface MarkmapNode {
   content: string;
   children?: MarkmapNode[];
   payload?: {
     level: number;
     index: number;
+    nodeType?: NodeType;
+    href?: string;
   };
 }
 
 export interface HeadingElement {
   level: number;
   text: string;
+  element: HTMLElement;
+}
+
+export interface ContentElement {
+  type: NodeType;
+  level: number; // headings: 1-6; list-items: inherit parent heading level
+  text: string;
+  href?: string;
+  ordered?: boolean;
   element: HTMLElement;
 }
 
