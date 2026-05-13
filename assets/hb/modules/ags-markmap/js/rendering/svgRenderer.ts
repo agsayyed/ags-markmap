@@ -48,10 +48,10 @@ export class SVGRenderer {
 
     // Create SVG element
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.id = 'ags-markmap-svg';
     svg.style.width = '100%';
     svg.style.height = '400px';
-    svg.style.border = '1px solid #ddd';
-    svg.style.borderRadius = '4px';
+    // Border styling moved to CSS for theme-awareness
 
     container.appendChild(svg);
     return svg;
@@ -59,7 +59,7 @@ export class SVGRenderer {
 
   private showLoadingState(container: HTMLElement): void {
     container.innerHTML = `
-      <div style="padding: 20px; border: 2px solid #ffc107; background: #fff3cd; color: #856404; border-radius: 4px;">
+      <div class="ags-markmap-loading">
         🔄 Initializing markmap...
       </div>
     `;
@@ -74,7 +74,7 @@ export class SVGRenderer {
     const container = this.config.getContainer();
     if (container) {
       container.innerHTML = `
-        <div style="color: orange; padding: 20px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px;">
+        <div class="ags-markmap-error">
           <strong>⚠️ Warning:</strong> ${error.message}<br>
           <small>Check network connectivity and CDN availability</small>
         </div>

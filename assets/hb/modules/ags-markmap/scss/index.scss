@@ -1,22 +1,52 @@
-@import 'variables';
+// Variables for the ags-markmap module
+$ags-markmap-height: 400px !default;
+$ags-markmap-border-radius: 5px !default;
+$ags-markmap-margin-bottom: 2rem !default;
+$ags-markmap-mobile-height: 300px !default;
+
+// Theme-aware border colors
+$ags-markmap-border-color-light: #ddd !default;
+$ags-markmap-border-color-dark: #495057 !default;
 
 // Styles for the ags-markmap module
-.ags-markmap-container {
+#ags-markmap-container {
   margin-bottom: $ags-markmap-margin-bottom;
   position: relative;
   width: 100%;
 
-  // The SVG container
+  // The SVG container - theme-aware borders and background
   #ags-markmap-svg {
     width: 100%;
     height: $ags-markmap-height;
-    border: 1px solid $ags-markmap-border-color;
+    border: 1px solid $ags-markmap-border-color-light;
     border-radius: $ags-markmap-border-radius;
+    background-color: var(--bs-body-bg, #ffffff) !important;
 
     // Mobile-specific styles
     @media (max-width: 768px) {
       height: $ags-markmap-mobile-height;
     }
+  }
+
+  // Loading and error state styles - theme-aware
+  .ags-markmap-loading,
+  .ags-markmap-error {
+    padding: 20px;
+    border-radius: 4px;
+    border-width: 2px;
+    border-style: solid;
+  }
+
+  .ags-markmap-loading {
+    border-color: #ffc107;
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .ags-markmap-error {
+    border-color: #ffeaa7;
+    background: #fff3cd;
+    color: orange;
   }
 
   // Customize markmap nodes
@@ -32,6 +62,75 @@
   .markmap-link {
     &:hover {
       stroke: var(--bs-primary);
+    }
+  }
+}
+
+// Dark mode styles - applied at root level for better specificity
+html[data-bs-theme="dark"],
+html[data-bs-theme*="dark"],
+html[data-bs-theme="auto"] {
+  #ags-markmap-container {
+    #ags-markmap-svg {
+      border-color: $ags-markmap-border-color-dark;
+      background-color: #212529 !important;
+      
+      // Fix code blocks inside markmap for dark mode
+      .markmap-foreign code {
+        color: #e9ecef !important;
+        background-color: #343a40 !important;
+      }
+      
+      .markmap-foreign mark {
+        background: #856404 !important;
+        color: #fff3cd !important;
+      }
+    }
+
+    .ags-markmap-loading {
+      border-color: #997404;
+      background: #664d03;
+      color: #ffecb5;
+    }
+
+    .ags-markmap-error {
+      border-color: #997404;
+      background: #664d03;
+      color: #ffb347;
+    }
+  }
+}
+
+// Also apply dark mode when system prefers dark color scheme (for auto mode)
+@media (prefers-color-scheme: dark) {
+  html[data-bs-theme="auto"] {
+    #ags-markmap-container {
+      #ags-markmap-svg {
+        border-color: $ags-markmap-border-color-dark;
+        background-color: #212529 !important;
+        
+        .markmap-foreign code {
+          color: #e9ecef !important;
+          background-color: #343a40 !important;
+        }
+        
+        .markmap-foreign mark {
+          background: #856404 !important;
+          color: #fff3cd !important;
+        }
+      }
+
+      .ags-markmap-loading {
+        border-color: #997404;
+        background: #664d03;
+        color: #ffecb5;
+      }
+
+      .ags-markmap-error {
+        border-color: #997404;
+        background: #664d03;
+        color: #ffb347;
+      }
     }
   }
 }

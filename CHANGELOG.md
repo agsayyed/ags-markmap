@@ -7,6 +7,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-05-13
+
+### Added
+
+- Theme-aware styling for dark mode support
+- CSS custom properties for dynamic background colors using `--bs-body-bg`
+- Dark mode specific styles for SVG container and content
+- Support for HBStack theme toggle (light/dark/auto modes)
+
+### Fixed
+
+- Dark mode visibility issue where light text appeared on white background
+- SVG container now adapts background color to match theme
+- Code blocks inside markmap now readable in dark mode
+- Mark/highlight elements properly styled for dark mode
+
+### Changed
+
+- Removed hardcoded inline styles from SVG renderer
+- Migrated inline styles to theme-aware CSS classes
+- SCSS now uses ID selector `#ags-markmap-container` matching actual HTML structure
+- Added SCSS loading in body-begin.html hook
+
 ## [0.3.1] - 2025-11-23
 
 ### Fixed
