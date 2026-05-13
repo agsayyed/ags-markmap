@@ -57,22 +57,91 @@
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    console.log('[ags-markmap] Creating markmap container...')
+  // Function to find and create container (can be retried)
+  function createMarkmapContainer(attemptCount = 1) {
+    console.log('[ags-markmap] Creating markmap container... (attempt ' + attemptCount + ')')
+    console.log('[ags-markmap] Current page layout:', '{{ .Page.Layout }}', 'Type:', '{{ .Page.Type }}')
 
-    // Find the main content area (common selectors)
-    const contentSelectors = [
+    // Check if custom selector is provided in front matter
+    const customSelector = {{ with .Page.Params.ags_markmap_container_selector }}{{ . | jsonify }}{{ else }}null{{ end }};
+    
+    // Extended selectors to support multiple layouts (docs, landing, blog, etc.)
+    const contentSelectors = customSelector ? [customSelector] : [
+      // Specific HBStack/docs layouts
       '.hb-docs-doc-content',
+      '.hb-docs-content',
+      '.docs-content',
+      
+      // Landing page layouts
+      '.hb-landing-content',
+      '.landing-content',
+      '.page-content',
+      
+      // Generic content areas
       '.content',
       'main .container',
+      'main.container',
+      'main',
+      
+      // Article and post layouts
       'article',
-      '.post-content'
+      '.post-content',
+      '.article-content',
+      
+      // Very generic fallbacks
+      '.container',
+      '#content'
     ]
 
     let contentArea = null
+    let matchedSelector = null
+    
+    console.log('[ags-markmap] Testing selectors...')
     for (const selector of contentSelectors) {
-      contentArea = document.querySelector(selector)
-      if (contentArea) break
+      console.log('[ags-markmap] Trying selector:', selector)
+      const element = document.querySelector(selector)
+      
+      if (!element) {
+        console.log('[ags-markmap]   → Not found in DOM')
+        continue
+      }
+      
+      console.log('[ags-markmap]   → Found element:', element.tagName, element.className)
+      
+      // Check if it's the debug panel
+      const debugPanel = document.getElementById('ags-markmap-diagnostic')
+      const isDebugPanel = element === debugPanel || (debugPanel && debugPanel.contains(element))
+      
+      if (isDebugPanel) {
+        console.log('[ags-markmap]   → Rejected: Is debug panel')
+        continue
+      }
+      
+      // Check positioning
+      const computedStyle = window.getComputedStyle(element)
+      const position = computedStyle.position
+      console.log('[ags-markmap]   → Position:', position)
+      
+      if (position === 'fixed') {
+        console.log('[ags-markmap]   → Rejected: Fixed position')
+        continue
+      }
+      
+      // Check visibility (more lenient)
+      const display = computedStyle.display
+      const visibility = computedStyle.visibility
+      console.log('[ags-markmap]   → Display:', display, 'Visibility:', visibility)
+      
+      if (display === 'none' || visibility === 'hidden') {
+        console.log('[ags-markmap]   → Rejected: Hidden')
+        continue
+      }
+      
+      // This is a valid candidate
+      contentArea = element
+      matchedSelector = selector
+      console.log('[ags-markmap]   → ✓ ACCEPTED! Using this element')
+      break
     }
 
     if (contentArea) {
@@ -83,10 +152,50 @@
 
       // Insert at the beginning of content
       contentArea.insertBefore(wrapper, contentArea.firstChild)
-      console.log('[ags-markmap] Container created successfully')
+      console.log('[ags-markmap] ✓ Container created successfully using selector:', matchedSelector)
+      console.log('[ags-markmap] ✓ Injected into element:', contentArea.tagName, contentArea.className || '(no class)')
+      return true
     } else {
-      console.warn('[ags-markmap] Could not find content area to inject markmap')
+      console.error('[ags-markmap] ❌ Could not find valid content area to inject markmap')
+      console.warn('[ags-markmap] Tried selectors:', contentSelectors)
+      console.warn('[ags-markmap] Page structure debug:')
+      console.warn('[ags-markmap]   main:', document.querySelector('main'))
+      console.warn('[ags-markmap]   article:', document.querySelector('article'))
+      console.warn('[ags-markmap]   .container:', document.querySelectorAll('.container'))
+      console.warn('[ags-markmap]   body children:', document.body.children.length)
+      
+      // Use body as ultimate fallback for landing layouts
+      if (attemptCount === 1 && document.body && document.body.children.length > 0) {
+        console.log('[ags-markmap] Using BODY as fallback container')
+        const wrapper = document.createElement('div')
+        wrapper.className = 'ags-markmap-wrapper'
+        wrapper.innerHTML = '<div id="ags-markmap-container"></div>'
+        
+        // Insert after first child (usually header/nav) or at beginning
+        const insertTarget = document.body.children[1] || document.body.firstChild
+        if (insertTarget) {
+          document.body.insertBefore(wrapper, insertTarget)
+          console.log('[ags-markmap] ✓ Container created in BODY (fallback)')
+          return true
+        }
+      }
+      
+      // Retry after a delay if this is the first attempt
+      if (attemptCount === 1) {
+        console.log('[ags-markmap] Retrying in 500ms...')
+        setTimeout(() => createMarkmapContainer(2), 500)
+        return false
+      }
+      
+      console.error('[ags-markmap] ❌ Failed to create container after retries')
+      console.warn('[ags-markmap] Tip: Use ags_markmap_container_selector in front matter to specify custom selector')
+      return false
     }
+  }
+
+  // Initial attempt when DOM is ready
+  document.addEventListener('DOMContentLoaded', function () {
+    createMarkmapContainer(1)
   })
 </script>
 {{- end -}}
