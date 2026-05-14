@@ -71,6 +71,20 @@ params:
       duration: 400 # Animation duration (ms)
 ```
 
+### Page-level Options (Front Matter)
+
+Add per-page options via `ags_markmap_opts`:
+
+```yaml
+ags_markmap_opts:
+  zoom: true
+  initialExpandLevel: -1   # -1 = fully expanded
+  includeListItems: true   # show list items as child nodes
+  maxDepth: 4
+```
+
+> **Note:** Hugo's `jsonify` template function lowercases all YAML keys when injecting them as `window.agsMarkmapOptions`. The module's `Configuration.normalizeKeys()` handles this internally — you should always write keys in **camelCase** in your front matter. If a new option isn't taking effect, check `configuration.ts` to ensure it's in the `keyMap`. See [DEBUGGING_GUIDE.md](docs/DEBUGGING_GUIDE.md#hugo-jsonify-lowercases-yaml-keys) for details.
+
 ## How It Works
 
 The module:

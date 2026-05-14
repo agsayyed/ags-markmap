@@ -1,4 +1,4 @@
-# AGS Markmap Debugging Guide
+## AGS Markmap Debugging Guide
 
 ## What Was Added
 
@@ -50,7 +50,7 @@ Plus step-by-step instructions to resolve each issue.
 
 Your current output shows:
 
-```
+```txt
 • Container: ✓ (DIV)              <- Working
 • SVG Element: ✓ (2 children)     <- Working
 • D3.js: ✓ object v7.9.0          <- Working
@@ -64,7 +64,7 @@ Your current output shows:
 
 Looking at your logs, you see:
 
-```
+```txt
 [LOG] --- ags-markmap: AGS Markmap initialized successfully ---
 ```
 
@@ -108,7 +108,7 @@ User sees:
 
 ### Issue 1: Module Not Imported
 
-```
+```txt
 ❌ Container element missing
 
 Actions:
@@ -120,7 +120,7 @@ Actions:
 
 ### Issue 2: TypeScript Not Compiling
 
-```
+```txt
 ❌ AGS Markmap instance not created
 
 Actions:
@@ -133,7 +133,7 @@ Actions:
 
 ### Issue 3: CDN Blocked
 
-```
+```txt
 ❌ D3.js not loaded
 
 Actions:
@@ -153,6 +153,61 @@ Actions:
 - [ ] Test with config `debug: false` (should not show)
 - [ ] Test with no config (should not show in production)
 - [ ] Test with `ags_markmap_debug: true` in front matter
+
+## ⚠️ Known Pitfalls
+
+### Hugo `jsonify` Lowercases YAML Keys
+
+When passing front matter options to JavaScript via Hugo's `jsonify` template function, **all YAML keys are lowercased** in the resulting JSON. This silently breaks camelCase JavaScript property access.
+
+**Example — what you write in front matter:**
+
+```yaml
+ags_markmap_opts:
+  includeListItems: true
+  initialExpandLevel: -1
+  maxDepth: 6
+  colorFreezeLevel: 4
+```
+
+**What `jsonify` produces:**
+
+```json
+{
+  "includelistitems": true,
+  "initialexpandlevel": -1,
+  "maxdepth": 6,
+  "colorfreezelevel": 4
+}
+```
+
+**What JavaScript expects:**
+
+```js
+options.includeListItems   // undefined — key is `includelistitems`
+options.initialExpandLevel // undefined — key is `initialexpandlevel`
+```
+
+**The fix** (implemented in `configuration.ts`):
+A `normalizeKeys()` mapper converts lowercase Hugo keys back to camelCase before merging with defaults:
+
+```ts
+private normalizeKeys(opts: Record<string, any>): Record<string, any> {
+  const keyMap: Record<string, string> = {
+    initialexpandlevel: 'initialExpandLevel',
+    maxdepth: 'maxDepth',
+    colorfreezelevel: 'colorFreezeLevel',
+    includelistitems: 'includeListItems'
+  };
+  // ...
+}
+```
+
+**When adding new camelCase options**, always register them in the `keyMap` inside `normalizeKeys()`. Otherwise the option will silently default to its fallback value.
+
+### Content Container Detection
+
+On `layout: landing` pages, the usual content wrappers (`main`, `article`, `.hb-docs-doc-content`) are absent. The `getContentContainer()` method includes an LCA (Lowest Common Ancestor) fallback that walks up from the first heading to find a scoped ancestor. If this returns `document.body`, list items from nav/sidebar may leak into the content. Test each layout type when changing container detection logic.
 
 ## Next Steps
 
