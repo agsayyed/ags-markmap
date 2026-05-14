@@ -6,10 +6,13 @@ HBStack framework.
 ## Features
 
 - **Automatic Mind Maps**: Generates an interactive mind map from your page's headings
+- **Data-Driven Shortcode**: Render mind maps from structured YAML data files — ideal for course catalogs, landing pages, and AI-generated content
 - **Front Matter Activation**: Simply add `ags_markmap: true` to any page
-- **Interactive Navigation**: Click on nodes to scroll to the corresponding section
+- **List Items as Nodes**: Optionally render bullet/numbered list items as child nodes in the tree
+- **Collapsible Levels**: Control initial expand depth via `initialExpandLevel`
+- **Interactive Navigation**: Nodes with `url` fields become clickable links
 - **HBStack Compatible**: Integrates perfectly with HugoPress hooks
-- **CDN-Based**: Zero build dependencies - uses CDN-loaded libraries
+- **CDN-Based**: Zero build dependencies — uses CDN-loaded libraries
 - **Responsive**: Works on desktop and mobile devices
 
 ## Installation
@@ -87,14 +90,100 @@ ags_markmap_opts:
 
 ## How It Works
 
-The module:
+The module has two modes:
 
+### Auto-Detect Mode
 1. Detects pages with `ags_markmap: true` in front matter
 2. Uses HugoPress hooks to inject the mind map container
-3. Loads Markmap.js and D3.js from CDN
-4. Extracts headings (H1-H6) from your page content
-5. Renders an interactive SVG mind map
-6. Adds click handlers for navigation to sections
+3. Walks the page DOM to extract headings (H1-H6) and optionally list items
+4. Builds a hierarchical tree and renders an interactive SVG mind map
+
+### Shortcode Mode (Data-Driven)
+1. Place `{{< ags-markmap "path.to.data" >}}` anywhere in your markdown
+2. Shortcode reads the YAML data file from Hugo's `data/` directory
+3. Renders the mind map at the shortcode's position — ideal for landing pages
+4. Self-sufficient — no `ags_markmap: true` needed
+
+---
+
+## Shortcode Usage (Data-Driven)
+
+For `layout: landing` pages or when you want full control over the mind map structure, use the shortcode with a YAML data file.
+
+### Step 1: Create a Data File
+
+Place a YAML file in your site's `data/` directory:
+
+```yaml
+# data/course/my-course.yaml
+title: "Course Title"
+provider: "Provider Name"
+url: "https://example.com/course"     # optional root link
+initialExpandLevel: 1                 # optional, overrides frontmatter
+children:
+  - title: "Section 1"
+    url: /courses/section-1/          # optional, makes node clickable
+    children:
+      - title: "Module A"
+      - title: "Module B"
+  - title: "Section 2"
+    url: /courses/section-2/
+    children:
+      - title: "Module C"
+      - title: "Module D"
+```
+
+### Step 2: Use the Shortcode
+
+```markdown
+---
+layout: landing
+title: 'My Course Overview'
+ags_markmap_opts:
+  zoom: true
+  initialExpandLevel: 1
+  height: 700px
+---
+
+{{< ags-markmap "course.my-course" >}}
+```
+
+The parameter uses **dot notation** to navigate Hugo's `site.Data`. `"course.my-course"` resolves to `data/course/my-course.yaml`.
+
+> **Tip:** You can nest data files in subdirectories. `"course.ibm.devops"` resolves to `data/course/ibm/devops.yaml`.
+
+### Both Modes Together
+
+If a page has both `ags_markmap: true` and the shortcode, the shortcode takes priority and auto-detect is skipped — no duplicate markmap.
+
+---
+
+## Page-Level Options
+
+All options go under `ags_markmap_opts` in front matter, or at the root of YAML data files:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `zoom` | bool | `true` | Enable zoom on the mind map |
+| `pan` | bool | `true` | Enable pan/drag on the mind map |
+| `initialExpandLevel` | int | `2` | Initial expand depth. `-1` = all, `0` = root only, `1` = root + 1 level |
+| `includeListItems` | bool | `false` | (Auto-detect only) Show list items as child nodes |
+| `height` | string | `400px` | Mind map container height (CSS value) |
+| `maxDepth` | int | `4` | Maximum tree depth to render |
+| `duration` | int | `750` | Animation duration in milliseconds |
+| `colorFreezeLevel` | int | `6` | Depth at which to freeze node colors |
+
+## Debugging
+
+Enable the diagnostic panel by adding to front matter:
+
+```yaml
+ags_markmap_debug: true
+```
+
+This shows a real-time status panel with dependency checks, heading counts, tree depth, and console logs. See [DEBUGGING_GUIDE.md](docs/DEBUGGING_GUIDE.md) for full details.
+
+---
 
 ## Customization
 
