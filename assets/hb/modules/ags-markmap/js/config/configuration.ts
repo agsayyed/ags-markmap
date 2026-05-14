@@ -27,13 +27,21 @@ export class Configuration implements IConfiguration {
       initialExpandLevel: 2,
       pan: true,
       zoom: true,
-      includeListItems: false
+      includeListItems: false,
+      height: '400px'
     };
 
     // Merge with custom options from Hugo front matter.
     // Hugo's jsonify lowercases all keys, so normalize camelCase keys.
     const hugoOptions = this.normalizeKeys(window.agsMarkmapOptions || {});
-    this.options = { ...defaultOptions, ...hugoOptions, ...customOptions };
+    const merged = { ...defaultOptions, ...hugoOptions, ...customOptions };
+
+    // containerId can be overridden via options (used by shortcode path)
+    if (merged.containerId) {
+      this.containerId = merged.containerId;
+    }
+
+    this.options = merged;
 
     log.debug('Configuration initialized');
     log.debug(`Environment: ${this.isDevelopment ? 'development' : 'production'}`);
@@ -58,7 +66,9 @@ export class Configuration implements IConfiguration {
       initialexpandlevel: 'initialExpandLevel',
       maxdepth: 'maxDepth',
       colorfreezelevel: 'colorFreezeLevel',
-      includelistitems: 'includeListItems'
+      includelistitems: 'includeListItems',
+      containerid: 'containerId',
+      height: 'height'
     };
     const result: Record<string, any> = {};
     for (const [key, value] of Object.entries(opts)) {

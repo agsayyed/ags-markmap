@@ -8,8 +8,9 @@ $ags-markmap-mobile-height: 300px !default;
 $ags-markmap-border-color-light: #ddd !default;
 $ags-markmap-border-color-dark: #495057 !default;
 
-// Styles for the ags-markmap module
-#ags-markmap-container {
+// Styles for the ags-markmap module (both auto-detect and shortcode paths)
+#ags-markmap-container,
+#ags-markmap-shortcode-container {
   margin-bottom: $ags-markmap-margin-bottom;
   position: relative;
   width: 100%;
@@ -70,7 +71,8 @@ $ags-markmap-border-color-dark: #495057 !default;
 html[data-bs-theme="dark"],
 html[data-bs-theme*="dark"],
 html[data-bs-theme="auto"] {
-  #ags-markmap-container {
+  #ags-markmap-container,
+  #ags-markmap-shortcode-container {
     #ags-markmap-svg {
       border-color: $ags-markmap-border-color-dark;
       background-color: #212529 !important;
@@ -104,7 +106,8 @@ html[data-bs-theme="auto"] {
 // Also apply dark mode when system prefers dark color scheme (for auto mode)
 @media (prefers-color-scheme: dark) {
   html[data-bs-theme="auto"] {
-    #ags-markmap-container {
+    #ags-markmap-container,
+    #ags-markmap-shortcode-container {
       #ags-markmap-svg {
         border-color: $ags-markmap-border-color-dark;
         background-color: #212529 !important;

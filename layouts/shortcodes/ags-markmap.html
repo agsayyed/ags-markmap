@@ -1,0 +1,48 @@
+{{- /* ags-markmap shortcode: renders markmap from a YAML data file.
+
+  Usage: {{< ags-markmap "course.devops-structure" >}}
+
+  Parameter: dot-separated path to data file under site's data/ directory.
+  Example:  "course.devops-structure" reads from data/course/devops-structure.yaml
+            "course.ibm.devops" reads from data/course/ibm/devops.yaml
+
+  Hugo converts hyphens in filenames to underscores for data access.
+  The shortcode is self-sufficient — loads CSS/JS deps if not already loaded.
+  If ags_markmap: true is also set in frontmatter, auto-detect is skipped. */ -}}
+
+{{- /* 1. Load dependencies (idempotent via Scratch guard) */ -}}
+{{- partial "hugopress/modules/ags-markmap/load-deps.html" . -}}
+
+{{- /* 2. Read the YAML data file */ -}}
+{{- $dataPath := .Get 0 | default "" -}}
+{{- $data := dict -}}
+{{- $hasData := false -}}
+
+{{- if $dataPath -}}
+  {{- $parts := split $dataPath "." -}}
+  {{- $data = site.Data -}}
+  {{- range $parts -}}
+    {{- if $data -}}
+      {{- $data = index $data . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- if $data -}}
+    {{- $hasData = true -}}
+  {{- else -}}
+    {{- errorf "ags-markmap shortcode: data not found at site.Data.%s" $dataPath -}}
+  {{- end -}}
+{{- else -}}
+  {{- errorf "ags-markmap shortcode: missing data path argument (e.g. \"course.devops-structure\")" -}}
+{{- end -}}
+
+{{- /* 3. Inject container and data */ -}}
+{{- if $hasData -}}
+<div id="ags-markmap-shortcode-container" class="ags-markmap-container-shortcode"></div>
+<script>
+  window.__agsMarkmapSource = 'shortcode';
+  window.__agsMarkmapData = {{ $data | jsonify | safeJS }};
+  {{- if eq hugo.Environment "development" -}}
+  console.debug('[ags-markmap] Shortcode data loaded from site.Data.{{ $dataPath }}');
+  {{- end -}}
+</script>
+{{- end -}}

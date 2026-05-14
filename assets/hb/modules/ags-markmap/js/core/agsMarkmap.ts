@@ -2,6 +2,7 @@ import { MarkmapOptions, MarkmapState, MarkmapNode } from '../types/markmap.type
 import { Configuration } from '../config/configuration';
 import { ContentParser } from '../content/contentParser';
 import { TreeBuilder } from '../content/treeBuilder';
+import { buildTreeFromYaml } from '../data/dataTreeBuilder';
 import { SVGRenderer } from '../rendering/svgRenderer';
 import log from '../utils/logger';
 
@@ -47,9 +48,24 @@ export class AGSMarkmap {
         throw new Error(`Container with ID '${this.config.containerId}' not found`);
       }
 
-      // Extract content and build tree
-      let tree;
-      if (this.config.options.includeListItems) {
+      // Apply configured height
+      if (this.config.options.height) {
+        container.style.height = String(this.config.options.height);
+      }
+
+      // Build tree: shortcode data takes priority over DOM auto-detect
+      let tree: MarkmapNode;
+      const yamlData = (window as any).__agsMarkmapData;
+
+      if (yamlData) {
+        log.debug('Building tree from shortcode YAML data');
+        tree = buildTreeFromYaml(yamlData);
+        // Override initialExpandLevel from YAML if present
+        if (yamlData.initialExpandLevel !== undefined) {
+          this.config.updateOptions({ initialExpandLevel: yamlData.initialExpandLevel });
+        }
+        this.state.headingCount = this.countTreeNodes(tree);
+      } else if (this.config.options.includeListItems) {
         const elements = this.parser.extractContentElements();
         this.state.headingCount = elements.filter((e) => e.type === 'heading').length;
         const listItemCount = elements.length - this.state.headingCount;
@@ -102,6 +118,14 @@ export class AGSMarkmap {
     log.debug('Options updated, re-initialization required');
   }
 
+  private countTreeNodes(node: MarkmapNode): number {
+    let count = 1;
+    if (node.children) {
+      count += node.children.reduce((sum, child) => sum + this.countTreeNodes(child), 0);
+    }
+    return count;
+  }
+
   private calculateTreeDepth(node: MarkmapNode, currentDepth: number = 0): number {
     if (!node.children || node.children.length === 0) {
       return currentDepth;
@@ -114,6 +138,10 @@ export class AGSMarkmap {
 }
 
 // Export singleton factory function for easy initialization
-export function createMarkmap(options?: MarkmapOptions): AGSMarkmap {
-  return new AGSMarkmap(options);
+export function createMarkmap(containerId?: string, options?: MarkmapOptions): AGSMarkmap {
+  const opts = { ...options };
+  if (containerId) {
+    opts.containerId = containerId;
+  }
+  return new AGSMarkmap(opts);
 }

@@ -5,7 +5,34 @@ import log from './utils/logger';
 document.addEventListener('DOMContentLoaded', () => {
   log.debug('DOM ready, checking for markmap containers');
 
-  // Check if markmap container exists (indicating markmap is enabled)
+  // Check shortcode path first: if data was injected, use shortcode container
+  const dataWindow = window as any;
+  if (dataWindow.__agsMarkmapData) {
+    log.debug('Shortcode data found, rendering from YAML');
+    const shortcodeContainer = document.getElementById('ags-markmap-shortcode-container');
+    if (!shortcodeContainer) {
+      log.warn('Shortcode data present but container #ags-markmap-shortcode-container not found');
+      return;
+    }
+
+    log.separator('Starting AGS Markmap initialization (shortcode)');
+
+    const markmap = createMarkmap('ags-markmap-shortcode-container');
+    markmap
+      .initialize()
+      .then(() => {
+        log.debug('AGS Markmap (shortcode) ready');
+        if (dataWindow.HUGO_ENVIRONMENT === 'development') {
+          dataWindow.agsMarkmap = markmap;
+        }
+      })
+      .catch((error) => {
+        log.error('Failed to initialize AGS Markmap (shortcode)', error);
+      });
+    return;
+  }
+
+  // Auto-detect path: check for head-end created container
   const container = document.getElementById('ags-markmap-container');
   if (!container) {
     log.debug('No markmap container found, skipping initialization');

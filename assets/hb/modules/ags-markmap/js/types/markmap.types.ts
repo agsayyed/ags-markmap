@@ -6,6 +6,7 @@ export interface MarkmapOptions {
   pan?: boolean;
   zoom?: boolean;
   includeListItems?: boolean;
+  containerId?: string;
   [key: string]: any;
 }
 
