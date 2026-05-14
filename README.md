@@ -172,6 +172,7 @@ All options go under `ags_markmap_opts` in front matter, or at the root of YAML 
 | `maxDepth` | int | `4` | Maximum tree depth to render |
 | `duration` | int | `750` | Animation duration in milliseconds |
 | `colorFreezeLevel` | int | `6` | Depth at which to freeze node colors |
+| `loadTimeout` | int | — | Max time (ms) to wait for CDN scripts (default: 20000) |
 
 ## Debugging
 

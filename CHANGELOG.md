@@ -7,6 +7,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-05-14
+
+### Fixed
+
+- **CDN race condition on first load**: Added `preconnect`/`dns-prefetch` hints to `<head>` for `unpkg.com`, increased default timeout from 10s to 20s (40 attempts)
+- **Configurable CDN timeout**: Added `loadTimeout` option (ms) to frontmatter for slow connections
+
+### Changed
+
+- **Module data mount**: Added `data/` mount to `config.toml` so sample course YAML ships with the module and is available via `site.Data`
+
 ## [0.4.0] - 2026-05-14
 
 ### Added
