@@ -7,6 +7,8 @@ export interface MarkmapOptions {
   zoom?: boolean;
   includeListItems?: boolean;
   containerId?: string;
+  height?: string;
+  loadTimeout?: number;
   [key: string]: any;
 }
 

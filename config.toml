@@ -11,6 +11,10 @@ target = "layouts"
 source = "assets/hb/modules/ags-markmap"
 target = "assets/hb/modules/ags-markmap"
 
+[[module.mounts]]
+source = "data"
+target = "data"
+
 [params.hb.ags_markmap]
 enable = true
 placement = "top"

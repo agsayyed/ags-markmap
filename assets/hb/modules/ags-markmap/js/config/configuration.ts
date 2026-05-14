@@ -16,8 +16,18 @@ export class Configuration implements IConfiguration {
     this.containerId = 'ags-markmap-container';
 
     // Set dependency loading parameters
-    this.maxAttempts = 20; // 10 seconds total
-    this.checkInterval = 500; // 500ms between checks
+    const hugoOpts = this.normalizeKeys(window.agsMarkmapOptions || {});
+    const loadTimeout = hugoOpts.loadTimeout || customOptions?.loadTimeout;
+
+    if (typeof loadTimeout === 'number' && loadTimeout > 0) {
+      // User-configured timeout: calculate attempts from interval
+      this.checkInterval = 500;
+      this.maxAttempts = Math.ceil(loadTimeout / this.checkInterval);
+    } else {
+      // Default: 40 attempts = 20 seconds (handles first-load CDN latency)
+      this.checkInterval = 500;
+      this.maxAttempts = 40;
+    }
 
     // Default markmap options
     const defaultOptions: MarkmapOptions = {
@@ -33,8 +43,8 @@ export class Configuration implements IConfiguration {
 
     // Merge with custom options from Hugo front matter.
     // Hugo's jsonify lowercases all keys, so normalize camelCase keys.
-    const hugoOptions = this.normalizeKeys(window.agsMarkmapOptions || {});
-    const merged = { ...defaultOptions, ...hugoOptions, ...customOptions };
+    // (hugoOpts already normalized above for loadTimeout — reuse it)
+    const merged = { ...defaultOptions, ...hugoOpts, ...customOptions };
 
     // containerId can be overridden via options (used by shortcode path)
     if (merged.containerId) {
@@ -68,7 +78,8 @@ export class Configuration implements IConfiguration {
       colorfreezelevel: 'colorFreezeLevel',
       includelistitems: 'includeListItems',
       containerid: 'containerId',
-      height: 'height'
+      height: 'height',
+      loadtimeout: 'loadTimeout'
     };
     const result: Record<string, any> = {};
     for (const [key, value] of Object.entries(opts)) {

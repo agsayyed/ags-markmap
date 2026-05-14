@@ -1,5 +1,11 @@
-{{- /* AGS Markmap Head Hook: Inject styles and container creation script */ -}} {{- if
-.Page.Params.ags_markmap -}}
+{{- /* AGS Markmap Head Hook: Inject styles and container creation script */ -}}
+
+{{- /* Preconnect to CDN — avoids first-load race condition by establishing
+       connection before the browser encounters the script tags */ -}}
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="dns-prefetch" href="https://unpkg.com">
+
+{{- if .Page.Params.ags_markmap -}}
 <style>
   .ags-markmap-wrapper {
     padding: 1rem 0;
