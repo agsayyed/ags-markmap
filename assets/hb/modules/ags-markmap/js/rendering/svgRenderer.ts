@@ -50,7 +50,7 @@ export class SVGRenderer {
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.id = 'ags-markmap-svg';
     svg.style.width = '100%';
-    svg.style.height = '400px';
+    svg.style.height = String(this.config.options.height || '400px');
     // Border styling moved to CSS for theme-awareness
 
     container.appendChild(svg);
