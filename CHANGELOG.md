@@ -7,6 +7,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-05-14
+
+### Added
+
+- **Shortcode mode**: `{{< ags-markmap "path.to.data" >}}` renders markmap from YAML data files — ideal for landing pages and course catalogs
+- **Data-driven trees**: `buildTreeFromYaml()` converts structured YAML to MarkmapNode trees with recursive `children` and optional `url` fields for clickable nodes
+- **Shared dependency loader**: `load-deps.html` partial ensures CSS/JS loads exactly once, shared by auto-detect and shortcode paths
+- **List items as child nodes**: `includeListItems: true` option renders bullet/numbered list items as children in the markmap tree
+- **Content element extraction**: `extractContentElements()` walks the DOM capturing both headings and list items in order
+- **Configurable mind map height**: `height` option (string, e.g. `"700px"`) controls the SVG container height
+- **Shortcode container**: `#ags-markmap-shortcode-container` with dedicated SCSS styling matching the auto-detect container
+- **`containerId` option support**: `createMarkmap()` accepts optional container ID for shortcode path
+- **Planning document**: `docs/PLANNING-linking-and-duplication.md` documents architecture, both paths, and future work
+
+### Fixed
+
+- **Hugo jsonify key lowering**: `normalizeKeys()` maps lowercase JSON keys back to camelCase, fixing silently ignored options (`includeListItems`, `initialExpandLevel`, `maxDepth`, `colorFreezeLevel`)
+- **`initialExpandLevel` not working**: Pre-fold nodes via `foldTreeByDepth()` before rendering, bypassing markmap-view v0.15.8's broken option handling
+- **Sibling `.md` files in branch bundles**: Documentation added to avoid `README.md` without `title:` in content folders (crashes blog archives template)
+
+### Changed
+
+- **body-begin hook** simplified to delegate to shared `load-deps.html`
+- **`markmapMain.ts`** handles two init paths: shortcode (checks `__agsMarkmapData`) and auto-detect (checks `#ags-markmap-container`)
+- **SCSS selectors** updated to style both `#ags-markmap-container` and `#ags-markmap-shortcode-container`
+- **`MarkmapNode.payload`** extended with `nodeType`, `href`, and `fold` fields
+- **`ContentElement`** interface added for mixed heading+list-item extraction
+- **`configuration.ts`** default `includeListItems: false` (opt-in)
+
 ## [0.3.2] - 2026-05-13
 
 ### Added
