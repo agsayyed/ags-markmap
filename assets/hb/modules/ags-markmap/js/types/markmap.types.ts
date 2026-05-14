@@ -5,6 +5,7 @@ export interface MarkmapOptions {
   initialExpandLevel?: number;
   pan?: boolean;
   zoom?: boolean;
+  includeListItems?: boolean;
   [key: string]: any;
 }
 

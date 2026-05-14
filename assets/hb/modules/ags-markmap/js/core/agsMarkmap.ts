@@ -47,17 +47,22 @@ export class AGSMarkmap {
         throw new Error(`Container with ID '${this.config.containerId}' not found`);
       }
 
-      // Extract content elements (headings + list items) and build tree
-      const elements = this.parser.extractContentElements();
-      this.state.headingCount = elements.filter((e) => e.type === 'heading').length;
-
-      if (elements.length === 0) {
-        log.warn('No content elements found on page');
+      // Extract content and build tree
+      let tree;
+      if (this.config.options.includeListItems) {
+        const elements = this.parser.extractContentElements();
+        this.state.headingCount = elements.filter((e) => e.type === 'heading').length;
+        const listItemCount = elements.length - this.state.headingCount;
+        log.debug(`Found ${elements.length} total elements (${this.state.headingCount} headings, ${listItemCount} list items)`);
+        if (elements.length === 0) log.warn('No content elements found on page');
+        tree = this.treeBuilder.buildTreeFromElements(elements);
+      } else {
+        const headings = this.parser.extractHeadings();
+        this.state.headingCount = headings.length;
+        log.debug(`Found ${this.state.headingCount} headings (list items excluded — set includeListItems: true to enable)`);
+        if (headings.length === 0) log.warn('No headings found on page');
+        tree = this.treeBuilder.buildTree(headings);
       }
-
-      log.debug(`Found ${elements.length} total elements (${this.state.headingCount} headings, ${elements.length - this.state.headingCount} list items)`);
-
-      const tree = this.treeBuilder.buildTreeFromElements(elements);
       this.state.treeDepth = this.calculateTreeDepth(tree);
 
       // Render the mindmap

@@ -18,15 +18,6 @@ export class ContentParser {
     log.debug('Starting content element extraction (headings + lists)');
 
     const container = this.getContentContainer();
-    if (!container) {
-      log.warn('No content container found, falling back to heading-only extraction');
-      return this.extractHeadings().map((h) => ({
-        type: 'heading' as const,
-        level: h.level,
-        text: h.text,
-        element: h.element
-      }));
-    }
 
     const elements: ContentElement[] = [];
     let currentHeadingLevel = 1;
@@ -81,7 +72,28 @@ export class ContentParser {
       const el = document.querySelector(sel);
       if (el) return el;
     }
-    return null;
+
+    // Fallback: find the lowest common ancestor of all page headings,
+    // excluding nav/header/footer/sidebar elements
+    const headings = Array.from(
+      document.querySelectorAll('h1, h2, h3, h4, h5, h6')
+    ).filter((h) => !h.closest('nav, header, footer, aside, .hb-docs-sidebar, .hb-docs-toc, .navbar'));
+
+    if (headings.length === 0) return null;
+
+    // Walk up from the first heading until we find an ancestor that contains all headings
+    let ancestor: Element | null = headings[0].parentElement;
+    while (ancestor && ancestor !== document.body) {
+      if (headings.every((h) => ancestor!.contains(h))) {
+        log.debug(`getContentContainer: using ancestor <${ancestor.tagName.toLowerCase()}> as fallback`);
+        return ancestor;
+      }
+      ancestor = ancestor.parentElement;
+    }
+
+    // Last resort: body (will include the whole page — headings-only fallback is safer here)
+    log.warn('getContentContainer: could not find a scoped container, list items may include navigation noise');
+    return document.body;
   }
 
   private extractListItemContent(li: HTMLElement): { text: string; href?: string } {

@@ -26,11 +26,13 @@ export class Configuration implements IConfiguration {
       duration: 750,
       initialExpandLevel: 2,
       pan: true,
-      zoom: true
+      zoom: true,
+      includeListItems: false
     };
 
-    // Merge with custom options from Hugo front matter
-    const hugoOptions = window.agsMarkmapOptions || {};
+    // Merge with custom options from Hugo front matter.
+    // Hugo's jsonify lowercases all keys, so normalize camelCase keys.
+    const hugoOptions = this.normalizeKeys(window.agsMarkmapOptions || {});
     this.options = { ...defaultOptions, ...hugoOptions, ...customOptions };
 
     log.debug('Configuration initialized');
@@ -45,5 +47,23 @@ export class Configuration implements IConfiguration {
 
   public getContainer(): HTMLElement | null {
     return document.getElementById(this.containerId);
+  }
+
+  /**
+   * Hugo's jsonify template function lowercases all YAML keys.
+   * Map them back to the camelCase keys our TypeScript code expects.
+   */
+  private normalizeKeys(opts: Record<string, any>): Record<string, any> {
+    const keyMap: Record<string, string> = {
+      initialexpandlevel: 'initialExpandLevel',
+      maxdepth: 'maxDepth',
+      colorfreezelevel: 'colorFreezeLevel',
+      includelistitems: 'includeListItems'
+    };
+    const result: Record<string, any> = {};
+    for (const [key, value] of Object.entries(opts)) {
+      result[keyMap[key] || key] = value;
+    }
+    return result;
   }
 }
