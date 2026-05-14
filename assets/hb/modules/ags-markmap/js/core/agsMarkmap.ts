@@ -81,6 +81,14 @@ export class AGSMarkmap {
       }
       this.state.treeDepth = this.calculateTreeDepth(tree);
 
+      // Apply initialExpandLevel by pre-folding nodes in the tree.
+      // markmap-view's option is unreliable, so we set payload.fold directly.
+      const expandLevel = this.config.options.initialExpandLevel;
+      if (expandLevel !== undefined && expandLevel >= 0) {
+        log.debug(`Pre-folding tree: nodes at level >= ${expandLevel} will be collapsed`);
+        this.foldTreeByDepth(tree, expandLevel);
+      }
+
       // Render the mindmap
       await this.renderer.render(tree);
 
@@ -116,6 +124,15 @@ export class AGSMarkmap {
   public updateOptions(newOptions: Partial<MarkmapOptions>): void {
     this.config.updateOptions(newOptions);
     log.debug('Options updated, re-initialization required');
+  }
+
+  private foldTreeByDepth(node: MarkmapNode, threshold: number): void {
+    if (node.payload && node.payload.level >= threshold) {
+      node.payload = { ...node.payload, fold: 1 };
+    }
+    if (node.children) {
+      node.children.forEach((child) => this.foldTreeByDepth(child, threshold));
+    }
   }
 
   private countTreeNodes(node: MarkmapNode): number {

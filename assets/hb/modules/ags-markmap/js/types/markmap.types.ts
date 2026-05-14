@@ -20,6 +20,7 @@ export interface MarkmapNode {
     index: number;
     nodeType?: NodeType;
     href?: string;
+    fold?: number;
   };
 }
 
