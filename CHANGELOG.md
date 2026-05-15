@@ -7,6 +7,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.4.3] - 2026-05-15
+
+### Added
+
+- **Clickable nodes with URL navigation**: nodes with `url:` in YAML data are clickable — navigates browser via delegated SVG click + MutationObserver for nodes created on expand
+- **Cursor distinctions**: `grab` on canvas background, default on text, `pointer` on clickable links, blue underline hover
+- **code_of_conduct.md**: no release without permission, test before commit
+
+### Fixed
+
+- **Debug widget**: now appears when `ags_markmap_debug: true` is set alone (without `ags_markmap: true`)
+- **Placeholder container**: auto-detect `#ags-markmap-container` hidden when shortcode is active
+- **Landing page error**: downgraded selector-failure `console.error` to `console.warn` on landing layouts
+
 ## [0.4.2] - 2026-05-15
 
 ### Added
