@@ -162,7 +162,7 @@
       console.log('[ags-markmap] ✓ Injected into element:', contentArea.tagName, contentArea.className || '(no class)')
       return true
     } else {
-      console.error('[ags-markmap] ❌ Could not find valid content area to inject markmap')
+      console.warn('[ags-markmap] No standard content area found (landing layout?) — trying body fallback')
       console.warn('[ags-markmap] Tried selectors:', contentSelectors)
       console.warn('[ags-markmap] Page structure debug:')
       console.warn('[ags-markmap]   main:', document.querySelector('main'))

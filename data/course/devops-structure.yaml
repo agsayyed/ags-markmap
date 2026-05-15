@@ -4,11 +4,11 @@
 
 title: "IBM DevOps and Software Engineering Professional Certificate"
 provider: "IBM"
-url: "https://www.coursera.org/professional-certificates/devops-software-engineering"
+# url: "https://www.coursera.org/..."   # external source (optional, commented out)
 # initialExpandLevel: 1   # optional: override frontmatter expand level
 children:
   - title: "01. Introduction to DevOps"
-    url: /courses/ibm/devops-content/devops-pcert/01-introduction-to-devops/
+    url: /en/docs/modules-testing/ags-markmap/without-layout/
     children:
       - title: "Module 1: Overview"
       - title: "Module 2: Social Coding Principles"
@@ -16,21 +16,21 @@ children:
       - title: "Module 4: Cloud & Microservices"
       - title: "Module 5: Final Project"
   - title: "02. Agile Development and Scrum"
-    url: /courses/ibm/devops-content/devops-pcert/02-agile-development-and-scrum/
+    url: /en/docs/modules-testing/ags-markmap/with-layout/test-minimal/
     children:
       - title: "Module 1: Agile Fundamentals"
       - title: "Module 2: Scrum Framework"
       - title: "Module 3: Agile Planning"
       - title: "Module 4: Project Management"
   - title: "03. Introduction to Linux"
-    url: /courses/ibm/devops-content/devops-pcert/03-introduction-to-linux/
+    url: /en/docs/modules-testing/ags-markmap/with-layout/test-deep-hierarchy/
     children:
       - title: "Module 1: Linux Basics"
       - title: "Module 2: File Systems"
       - title: "Module 3: Shell Scripting"
       - title: "Module 4: System Administration"
   - title: "09. Introduction to Containers"
-    url: /courses/ibm/devops-content/devops-pcert/09-introduction-to-containers/
+    url: /en/docs/modules-testing/ags-markmap/with-layout/test-course-metadata/
     children:
       - title: "Module 1: Container Concepts"
       - title: "Module 2: Docker Basics"
@@ -38,21 +38,21 @@ children:
       - title: "Module 4: Registry & Repositories"
       - title: "Module 5: Production Considerations"
   - title: "10. Microservices"
-    url: /courses/ibm/devops-content/devops-pcert/10-microservices/
+    url: /en/docs/modules-testing/ags-markmap/with-layout/test-with-links/
     children:
       - title: "Module 1: Microservices Architecture"
       - title: "Module 2: API Design"
       - title: "Module 3: Service Communication"
       - title: "Module 4: Deployment Strategies"
   - title: "11. TDD & BDD"
-    url: /courses/ibm/devops-content/devops-pcert/11-tdd-bdd/
+    url: /en/docs/modules-testing/ags-markmap/with-layout/test-minimal/
     children:
       - title: "Module 1: Testing Fundamentals"
       - title: "Module 2: Test-Driven Development"
       - title: "Module 3: Behaviour-Driven Development"
       - title: "Module 4: Testing in CI/CD"
   - title: "16. Kubernetes Lab"
-    url: /courses/ibm/devops-content/devops-pcert/16-k8s-lab/
+    url: /en/docs/modules-testing/ags-markmap/with-layout/test-shortcode/
     children:
       - title: "Module 1: K8s Fundamentals"
       - title: "Module 2: Pods & Deployments"

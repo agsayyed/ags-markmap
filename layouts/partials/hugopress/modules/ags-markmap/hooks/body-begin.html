@@ -1,8 +1,9 @@
 {{- /* AGS Markmap Hook: Load scripts and initialize markmap when enabled in front matter */ -}}
 
-{{/* Include diagnostic panel - should be available even if markmap isn't enabled */}}
+{{/* Include diagnostic panel — always rendered when ags_markmap_debug: true */}}
 {{- partial "hugopress/modules/ags-markmap/debug/diagnostic-panel.html" . -}}
 
-{{- if .Page.Params.ags_markmap -}}
+{{- /* Load deps when markmap is enabled OR debug panel is active (needs CSS + TS) */ -}}
+{{- if or .Page.Params.ags_markmap .Page.Params.ags_markmap_debug -}}
   {{- partial "hugopress/modules/ags-markmap/load-deps.html" . -}}
 {{- end -}}

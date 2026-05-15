@@ -15,6 +15,28 @@ $ags-markmap-border-color-dark: #495057 !default;
   position: relative;
   width: 100%;
 
+  // Canvas background: grab hand (draggable)
+  #ags-markmap-svg {
+    cursor: grab;
+  }
+
+  // Text nodes: default cursor (text is selectable)
+  foreignObject {
+    cursor: default;
+  }
+
+  // Clickable nodes with URLs — pointer finger + blue hover
+  g[data-url],
+  g[data-url] foreignObject {
+    cursor: pointer;
+  }
+
+  g[data-url]:hover .markmap-foreign {
+    text-decoration: underline;
+    text-decoration-color: #0066cc;
+    color: #0066cc;
+  }
+
   // The SVG container - theme-aware borders and background
   #ags-markmap-svg {
     width: 100%;

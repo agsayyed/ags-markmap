@@ -9,6 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const dataWindow = window as any;
   if (dataWindow.__agsMarkmapData) {
     log.debug('Shortcode data found, rendering from YAML');
+
+    // Hide the auto-detect placeholder container (created by head-end hook)
+    const autoContainer = document.getElementById('ags-markmap-container');
+    if (autoContainer) {
+      autoContainer.style.display = 'none';
+      log.debug('Hidden auto-detect container (shortcode is active)');
+    }
+
     const shortcodeContainer = document.getElementById('ags-markmap-shortcode-container');
     if (!shortcodeContainer) {
       log.warn('Shortcode data present but container #ags-markmap-shortcode-container not found');
