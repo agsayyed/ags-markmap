@@ -150,7 +150,23 @@ ags_markmap_opts:
 
 The parameter uses **dot notation** to navigate Hugo's `site.Data`. `"course.my-course"` resolves to `data/course/my-course.yaml`.
 
+> ⚠️ **Important:** The shortcode takes **exactly one argument** — the data path. Options like `zoom`, `initialExpandLevel`, and `height` go in `ags_markmap_opts` frontmatter (above), **not** in the shortcode.  
+> ❌ `{{< ags-markmap "course.foo" zoom=true >}}` — WRONG  
+> ✅ Options in frontmatter, path in shortcode — CORRECT
+
 > **Tip:** You can nest data files in subdirectories. `"course.ibm.devops"` resolves to `data/course/ibm/devops.yaml`.
+
+### Clickable Nodes (URL Navigation)
+
+Add a `url:` field to any node in the YAML data to make it clickable. Hover shows a blue underline + pointer cursor, and clicking navigates the browser:
+
+```yaml
+children:
+  - title: "Section 1"
+    url: /courses/section-1/   # ← clickable — navigates here
+    children:
+      - title: "Module A"       # ← not clickable (no url:)
+```
 
 ### Both Modes Together
 
