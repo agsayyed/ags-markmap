@@ -28,8 +28,18 @@ export class SVGRenderer {
       // Create SVG element
       const svg = this.createSVGElement(container);
 
-      // Create and render markmap
-      this.markmapInstance = markmapAPI.create(svg, this.config.options, tree);
+      // Create and render markmap with click handler for URL navigation
+      const renderOptions = {
+        ...this.config.options,
+        onClick: (node: any) => {
+          const url = node?.data?.payload?.href;
+          if (url) {
+            log.debug(`Navigating to: ${url}`);
+            window.location.href = url;
+          }
+        }
+      };
+      this.markmapInstance = markmapAPI.create(svg, renderOptions, tree);
 
       // Fit the view
       this.markmapInstance.fit();

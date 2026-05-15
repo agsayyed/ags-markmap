@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-05-15
+
+### Added
+
+- **Clickable nodes**: nodes with a `url:` field in YAML data now navigate the browser on click via markmap-view `onClick` handler
+
+
 ## [0.4.1] - 2026-05-14
 
 ### Fixed
