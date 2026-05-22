@@ -1,6 +1,12 @@
-{{- /* AGS Markmap Hook: Load scripts and initialize markmap when enabled in front matter */ -}}
+{{- /* AGS Markmap Hook: Load scripts and initialize markmap when enabled in front matter.
 
-{{/* Include diagnostic panel — always rendered when ags_markmap_debug: true */}}
+       NOTE (v0.4.4): The primary dep-loading site is now the `head-end` hook
+       (see hooks/head-end.html). This `body-begin` hook is kept as
+       defence-in-depth and as the canonical hugopress integration point.
+       `load-deps.html` is idempotent (guarded by .Page.Scratch) so dispatching
+       from both hooks is safe \u2014 the second call short-circuits. */ -}}
+
+{{/* Include diagnostic panel \u2014 always rendered when ags_markmap_debug: true */}}
 {{- partial "hugopress/modules/ags-markmap/debug/diagnostic-panel.html" . -}}
 
 {{- /* Load deps when markmap is enabled OR debug panel is active (needs CSS + TS) */ -}}

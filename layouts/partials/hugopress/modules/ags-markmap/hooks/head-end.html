@@ -5,6 +5,17 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="dns-prefetch" href="https://unpkg.com">
 
+{{- /* v0.4.4 — load dependencies (D3, markmap-view, SCSS, TS bundle) from this
+       hook as well. Previously this was the job of the body-begin hook, but
+       hugopress' partialCached probe for `body-begin.html` is unreliable when
+       many modules are mounted (it can negative-cache for the lifetime of
+       `hugo server`). The shared `load-deps.html` uses .Page.Scratch so a
+       double dispatch from body-begin is a no-op. See
+       bug-reported/ags-markmap-v0.4.3-auto-detect-bugs.md. */ -}}
+{{- if or .Page.Params.ags_markmap .Page.Params.ags_markmap_debug -}}
+  {{- partial "hugopress/modules/ags-markmap/load-deps.html" . -}}
+{{- end -}}
+
 {{- if .Page.Params.ags_markmap -}}
 <style>
   .ags-markmap-wrapper {
@@ -69,7 +80,10 @@
     console.log('[ags-markmap] Current page layout:', '{{ .Page.Layout }}', 'Type:', '{{ .Page.Type }}')
 
     // Check if custom selector is provided in front matter
-    const customSelector = {{ with .Page.Params.ags_markmap_container_selector }}{{ . | jsonify }}{{ else }}null{{ end }};
+    // jsonify | safeJS — jsonify already produces a valid JS string literal;
+    // safeJS opts out of html/template's contextual auto-escape pass which
+    // would otherwise double-escape the quotes and yield an invalid selector.
+    const customSelector = {{ with .Page.Params.ags_markmap_container_selector }}{{ . | jsonify | safeJS }}{{ else }}null{{ end }};
     
     // Extended selectors to support multiple layouts (docs, landing, blog, etc.)
     const contentSelectors = customSelector ? [customSelector] : [
@@ -77,6 +91,10 @@
       '.hb-docs-doc-content',
       '.hb-docs-content',
       '.docs-content',
+
+      // HBStack blog post layouts
+      '.hb-blog-post-content',
+      '.hb-blog-post',
       
       // Landing page layouts
       '.hb-landing-content',

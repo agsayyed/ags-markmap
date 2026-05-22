@@ -7,6 +7,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [0.4.4] - 2026-05-22
+
+### Fixed
+
+- **Bug 1 — head-end `customSelector` JSON double-escape**: Hugo's `html/template`
+  contextual auto-escaping re-escapes `jsonify` output inside `<script>` blocks,
+  producing an invalid CSS selector like `"&#34;.hb-blog-post-content&#34;"`.
+  Now uses `jsonify | safeJS` (matching the pattern already used in
+  `load-deps.html` and the shortcode), yielding a clean string literal.
+- **Bug 2 — `body-begin` hook not firing on hbstack/blog posts**: hugopress's
+  `partialCached "hugopress/functions/partial-exists"` permanently memoises
+  negative probe results, so the `body-begin` hook would silently drop
+  `load-deps.html` for the entire `hugo server` lifetime. The hook output (CSS
+  + container script) was emitted by `head-end`, but D3 / markmap-view / the
+  TS bundle were never loaded, leaving the green container empty. The primary
+  dep-loading site has been moved into `head-end` (which fires reliably).
+  `body-begin` is kept as defence-in-depth; `load-deps.html`'s
+  `.Page.Scratch` guard makes the second dispatch a no-op.
+- **Bug 3 — auto-detect failed on hbstack/blog posts**: added
+  `.hb-blog-post-content` and `.hb-blog-post` to the default `contentSelectors`
+  list so blog posts work with zero per-page configuration.
+
+See `bug-reported/ags-markmap-v0.4.3-auto-detect-bugs.md` for the full report
+and consumer-side reproducer.
+
 ## [0.4.3] - 2026-05-15
 
 ### Added
